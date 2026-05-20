@@ -372,7 +372,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
           // Menu items
           _buildSidebarIcon(Icons.grid_view_rounded, true, () {}),
-          _buildSidebarIcon(Icons.analytics_outlined, false, () {}),
+          _buildSidebarIcon(Icons.analytics_outlined, false, () => Navigator.pushNamed(context, '/analytics')),
           _buildSidebarIcon(Icons.monitor_heart_outlined, false, () => Navigator.pushNamed(context, '/status')),
           _buildSidebarIcon(Icons.settings_outlined, false, () => Navigator.pushNamed(context, '/settings')),
           _buildSidebarIcon(Icons.help_outline, false, () {}),
