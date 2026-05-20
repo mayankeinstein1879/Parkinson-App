@@ -652,6 +652,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     final color = isLeft ? AppColors.leftInsole : AppColors.rightInsole;
     final name = isLeft ? 'Left Insole' : 'Right Insole';
 
+    final isConnected = device != null;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -668,18 +670,39 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               Text(
                 name,
                 style: GoogleFonts.orbitron(
-                  color: color,
+                  color: isConnected ? color : AppColors.textSecondary,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
               ),
               const Spacer(),
-              const Icon(Icons.bluetooth, color: AppColors.accentGreen, size: 12),
+              Icon(
+                isConnected ? Icons.bluetooth : Icons.bluetooth_disabled,
+                color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                size: 12,
+              ),
               const SizedBox(width: 4),
-              const Text('Connected', style: TextStyle(color: AppColors.accentGreen, fontSize: 10)),
+              Text(
+                isConnected ? 'Connected' : 'Disconnected',
+                style: TextStyle(
+                  color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(width: 8),
-              Icon(Icons.battery_4_bar_rounded, color: color, size: 14),
-              Text('${telemetry.batteryLevel}%', style: TextStyle(color: color, fontSize: 10)),
+              Icon(
+                isConnected ? Icons.battery_4_bar_rounded : Icons.battery_0_bar_rounded,
+                color: isConnected ? color : AppColors.textSecondary,
+                size: 14,
+              ),
+              Text(
+                isConnected ? '${telemetry.batteryLevel}%' : '0%',
+                style: TextStyle(
+                  color: isConnected ? color : AppColors.textSecondary,
+                  fontSize: 10,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -707,11 +730,11 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTelemetryProgressRow('Gait Stability', telemetry.gaitStability, '%', AppColors.accentGreen, 0.7),
+                    _buildTelemetryProgressRow('Gait Stability', telemetry.gaitStability, '%', AppColors.accentGreen, isConnected ? 0.7 : 0.0),
                     const SizedBox(height: 12),
-                    _buildTelemetryProgressRow('FOG Risk', telemetry.fogRisk, '%', AppColors.warningOrange, 0.1),
+                    _buildTelemetryProgressRow('FOG Risk', telemetry.fogRisk, '%', AppColors.warningOrange, isConnected ? 0.1 : 0.0),
                     const SizedBox(height: 12),
-                    _buildTelemetryProgressRow('Step Cadence', telemetry.stepCadence, '', color, 0.8),
+                    _buildTelemetryProgressRow('Step Cadence', telemetry.stepCadence, '', color, isConnected ? 0.8 : 0.0),
                   ],
                 ),
               ),
@@ -725,7 +748,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             child: CustomPaint(
               painter: _LiveWavePainter(
                 animValue: _waveController.value,
-                lineColor: color,
+                lineColor: isConnected ? color : AppColors.textSecondary.withOpacity(0.3),
+                isFlat: !isConnected,
               ),
             ),
           ),
@@ -795,6 +819,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     final color = isLeft ? AppColors.leftInsole : AppColors.rightInsole;
     final name = isLeft ? 'Left Insole' : 'Right Insole';
 
+    final isConnected = device != null;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -809,18 +835,39 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               Text(
                 name,
                 style: GoogleFonts.orbitron(
-                  color: color,
+                  color: isConnected ? color : AppColors.textSecondary,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),
               ),
               const Spacer(),
-              const Icon(Icons.bluetooth, color: AppColors.accentGreen, size: 14),
+              Icon(
+                isConnected ? Icons.bluetooth : Icons.bluetooth_disabled,
+                color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                size: 14,
+              ),
               const SizedBox(width: 4),
-              const Text('Connected', style: TextStyle(color: AppColors.accentGreen, fontSize: 11)),
+              Text(
+                isConnected ? 'Connected' : 'Disconnected',
+                style: TextStyle(
+                  color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(width: 10),
-              Icon(Icons.battery_4_bar_rounded, color: color, size: 16),
-              Text('${telemetry.batteryLevel}%', style: TextStyle(color: color, fontSize: 11)),
+              Icon(
+                isConnected ? Icons.battery_4_bar_rounded : Icons.battery_0_bar_rounded,
+                color: isConnected ? color : AppColors.textSecondary,
+                size: 16,
+              ),
+              Text(
+                isConnected ? '${telemetry.batteryLevel}%' : '0%',
+                style: TextStyle(
+                  color: isConnected ? color : AppColors.textSecondary,
+                  fontSize: 11,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -1714,10 +1761,13 @@ class _LiveWavePainter extends CustomPainter {
   final Color lineColor;
   final bool isSine;
 
+  final bool isFlat;
+
   _LiveWavePainter({
     required this.animValue,
     required this.lineColor,
     this.isSine = false,
+    this.isFlat = false,
   });
 
   @override
@@ -1732,6 +1782,12 @@ class _LiveWavePainter extends CustomPainter {
     final h = size.height;
 
     path.moveTo(0, h / 2);
+
+    if (isFlat) {
+      path.lineTo(w, h / 2);
+      canvas.drawPath(path, paint);
+      return;
+    }
 
     if (isSine) {
       // Smooth sinusoidal vibration wave (Haptic representation)
