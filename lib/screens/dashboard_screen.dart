@@ -1945,7 +1945,7 @@ class _AiHolographicPainter extends CustomPainter {
                 shoulderL.dx - scale*0.04, torsoBot.dy - scale*0.06,
                 shoulderL.dx, shoulderL.dy)
       ..close();
-    _drawBodySegment(torsoPath, glowSigma: 6, fillAlpha: 0.14);
+    drawBodySegment(torsoPath, glowSigma: 6, fillAlpha: 0.14);
 
     // Pelvis/hips
     final pelvisPath = Path()
@@ -1954,7 +1954,7 @@ class _AiHolographicPainter extends CustomPainter {
       ..lineTo(hipR.dx, hipR.dy)
       ..lineTo(hipL.dx, hipL.dy)
       ..close();
-    _drawBodySegment(pelvisPath, glowSigma: 5, fillAlpha: 0.12);
+    drawBodySegment(pelvisPath, glowSigma: 5, fillAlpha: 0.12);
 
     // â”€â”€ Neck â”€â”€
     canvas.drawLine(neckTop, neckBot, glowStroke(cyan, 5, 4));
