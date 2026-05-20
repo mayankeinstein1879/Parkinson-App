@@ -375,7 +375,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           _buildSidebarIcon(Icons.analytics_outlined, false, () => Navigator.pushNamed(context, '/analytics')),
           _buildSidebarIcon(Icons.monitor_heart_outlined, false, () => Navigator.pushNamed(context, '/status')),
           _buildSidebarIcon(Icons.settings_outlined, false, () => Navigator.pushNamed(context, '/settings')),
-          _buildSidebarIcon(Icons.help_outline, false, () {}),
+          _buildSidebarIcon(Icons.help_outline, false, () => Navigator.pushNamed(context, '/help')),
 
           const Spacer(),
 
@@ -1167,7 +1167,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
 
               // Cues Grid Row
               Row(
@@ -1183,7 +1183,42 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       AppColors.primaryCyan,
                       (v) => settings.updateCueSettings(settings.cueSettings.copyWith(visualCueEnabled: v)),
                       (val) => settings.updateCueSettings(settings.cueSettings.copyWith(visualIntensity: val)),
-                      null,
+                      valueLabel: 'Intensity',
+                      topRightLabel: 'Sync',
+                      footer: Row(
+                        children: [
+                          const Text(
+                            'Sync',
+                            style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Container(
+                              height: 32,
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF243248),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: AppColors.cardBorder),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildCueFooterButton('Auto', modeIsAuto, () {
+                                      settings.updateCueSettings(settings.cueSettings.copyWith(mode: CueMode.auto));
+                                    }),
+                                  ),
+                                  Expanded(
+                                    child: _buildCueFooterButton('Manual', !modeIsAuto, () {
+                                      settings.updateCueSettings(settings.cueSettings.copyWith(mode: CueMode.manual));
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -1198,13 +1233,16 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       AppColors.secondaryPurple,
                       (v) => settings.updateCueSettings(settings.cueSettings.copyWith(hapticCueEnabled: v)),
                       (val) => settings.updateCueSettings(settings.cueSettings.copyWith(hapticIntensity: val)),
-                      SizedBox(
-                        height: 24,
+                      valueLabel: 'Intensity',
+                      topRightLabel: 'Sync',
+                      footer: SizedBox(
+                        height: 28,
                         child: CustomPaint(
                           painter: _LiveWavePainter(
                             animValue: _waveController.value,
                             lineColor: AppColors.secondaryPurple,
                             isSine: true,
+                            strokeWidth: 1.8,
                           ),
                         ),
                       ),
@@ -1222,54 +1260,45 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       AppColors.accentGreen,
                       (v) => settings.updateCueSettings(settings.cueSettings.copyWith(audioCueEnabled: v)),
                       (val) => settings.updateCueSettings(settings.cueSettings.copyWith(audioVolume: val)),
-                      DropdownButtonHideUnderline(
-                        child: Container(
-                          height: 32,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.cardBorder),
+                      valueLabel: 'Volume',
+                      footer: Row(
+                        children: [
+                          const Text(
+                            'Sound Pattern',
+                            style: TextStyle(color: AppColors.textPrimary, fontSize: 10, fontWeight: FontWeight.w500),
                           ),
-                          child: DropdownButton<CuePattern>(
-                            value: settings.cueSettings.pattern,
-                            dropdownColor: AppColors.surface,
-                            style: const TextStyle(color: AppColors.textPrimary, fontSize: 11),
-                            icon: const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary, size: 16),
-                            onChanged: (pat) {
-                              if (pat != null) {
-                                settings.updateCueSettings(settings.cueSettings.copyWith(pattern: pat));
-                              }
-                            },
-                            items: const [
-                              DropdownMenuItem(value: CuePattern.rhythmic, child: Text('Sound (Rhythmic)')),
-                              DropdownMenuItem(value: CuePattern.adaptive, child: Text('Adaptive')),
-                              DropdownMenuItem(value: CuePattern.burst, child: Text('Burst')),
-                            ],
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: DropdownButtonHideUnderline(
+                              child: Container(
+                                height: 32,
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF243248),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: AppColors.cardBorder),
+                                ),
+                                child: DropdownButton<CuePattern>(
+                                  value: settings.cueSettings.pattern,
+                                  dropdownColor: AppColors.surface,
+                                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 11),
+                                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textSecondary, size: 16),
+                                  onChanged: (pat) {
+                                    if (pat != null) {
+                                      settings.updateCueSettings(settings.cueSettings.copyWith(pattern: pat));
+                                    }
+                                  },
+                                  items: const [
+                                    DropdownMenuItem(value: CuePattern.rhythmic, child: Text('Sound')),
+                                    DropdownMenuItem(value: CuePattern.adaptive, child: Text('Adaptive')),
+                                    DropdownMenuItem(value: CuePattern.burst, child: Text('Burst')),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Sync Checkbox / toggle
-              Row(
-                children: [
-                  const Text('Sync', style: TextStyle(color: AppColors.textSecondary, fontSize: 11)),
-                  const SizedBox(width: 8),
-                  Transform.scale(
-                    scale: 0.8,
-                    child: Checkbox(
-                      value: settings.cueSettings.syncLeftRight,
-                      activeColor: AppColors.primaryCyan,
-                      onChanged: (v) {
-                        if (v != null) {
-                          settings.updateCueSettings(settings.cueSettings.copyWith(syncLeftRight: v));
-                        }
-                      },
                     ),
                   ),
                 ],
@@ -1311,14 +1340,25 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     Color activeColor,
     ValueChanged<bool> onToggle,
     ValueChanged<double> onSlider,
-    Widget? extraChild,
+    {
+    required String valueLabel,
+    String? topRightLabel,
+    Widget? footer,
+    }
   ) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: const Color(0xFF2B364A),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
+        border: Border.all(color: const Color(0x2A8AB8DB)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1334,12 +1374,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       title,
                       style: GoogleFonts.orbitron(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
-                    Text(desc, style: const TextStyle(color: AppColors.textSecondary, fontSize: 9)),
+                    const SizedBox(height: 2),
+                    Text(desc, style: const TextStyle(color: AppColors.textSecondary, fontSize: 9.5)),
                   ],
                 ),
               ),
               Transform.scale(
-                scale: 0.8,
+                scale: 0.92,
                 child: Switch(
                   value: enabled,
                   activeColor: activeColor,
@@ -1348,31 +1389,57 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Intensity', style: TextStyle(color: AppColors.textSecondary, fontSize: 9)),
-              Expanded(
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    activeTrackColor: activeColor,
-                    thumbColor: activeColor,
-                    trackHeight: 2,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                  ),
-                  child: Slider(
-                    value: intensity,
-                    onChanged: onSlider,
-                  ),
-                ),
-              ),
+              Text(valueLabel, style: const TextStyle(color: AppColors.textPrimary, fontSize: 10.5, fontWeight: FontWeight.w500)),
+              if (topRightLabel != null)
+                Text(topRightLabel, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10.5, fontWeight: FontWeight.w500)),
             ],
           ),
-          if (extraChild != null) ...[
+          const SizedBox(height: 4),
+          SliderTheme(
+            data: SliderThemeData(
+              activeTrackColor: activeColor,
+              inactiveTrackColor: const Color(0xFF1A2638),
+              thumbColor: Colors.white,
+              overlayColor: activeColor.withOpacity(0.12),
+              trackHeight: 4,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+            ),
+            child: Slider(
+              value: intensity,
+              onChanged: onSlider,
+            ),
+          ),
+          if (footer != null) ...[
             const SizedBox(height: 8),
-            extraChild,
+            footer,
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildCueFooterButton(String label, bool active, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: active ? AppColors.cardBackground : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: active ? AppColors.textPrimary : AppColors.textSecondary,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }

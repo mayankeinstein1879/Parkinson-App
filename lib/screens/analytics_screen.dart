@@ -12,7 +12,7 @@ class AnalyticsScreen extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 1050) {
-          return _AnalyticsDesktopScreen();
+          return const _AnalyticsDesktopScreen();
         }
         return _AnalyticsMobileScreen();
       },
@@ -20,7 +20,32 @@ class AnalyticsScreen extends StatelessWidget {
   }
 }
 
-class _AnalyticsDesktopScreen extends StatelessWidget {
+class _AnalyticsDesktopScreen extends StatefulWidget {
+  const _AnalyticsDesktopScreen();
+
+  @override
+  State<_AnalyticsDesktopScreen> createState() => _AnalyticsDesktopScreenState();
+}
+
+class _AnalyticsDesktopScreenState extends State<_AnalyticsDesktopScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _chartController;
+
+  @override
+  void initState() {
+    super.initState();
+    _chartController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _chartController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,22 +150,36 @@ class _AnalyticsDesktopScreen extends StatelessWidget {
                                     _TagChip(label: 'Medical Glow'),
                                   ],
                                 ),
-                                child: SizedBox(
-                                  height: 155,
-                                  child: CustomPaint(
-                                    painter: _WaveformPainter(),
-                                  ),
+                                child: AnimatedBuilder(
+                                  animation: _chartController,
+                                  builder: (context, _) {
+                                    return SizedBox(
+                                      height: 155,
+                                      child: CustomPaint(
+                                        painter: _WaveformPainter(
+                                          phase: _chartController.value,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                               const SizedBox(height: 14),
                               _AnalyticsCard(
                                 title: 'FOG Probability Timeline Trend Chart',
                                 trailing: const _LegendDot(label: 'Risk zone', color: Color(0xFFFF537A)),
-                                child: SizedBox(
-                                  height: 120,
-                                  child: CustomPaint(
-                                    painter: _FogTrendPainter(),
-                                  ),
+                                child: AnimatedBuilder(
+                                  animation: _chartController,
+                                  builder: (context, _) {
+                                    return SizedBox(
+                                      height: 120,
+                                      child: CustomPaint(
+                                        painter: _FogTrendPainter(
+                                          phase: _chartController.value,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -256,7 +295,7 @@ class _AnalyticsSidebar extends StatelessWidget {
           _SidebarIcon(
             icon: Icons.help_outline,
             active: false,
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, '/help'),
           ),
           const Spacer(),
           _SidebarIcon(
@@ -949,6 +988,10 @@ class _AnalyticsRadarPainter extends CustomPainter {
 }
 
 class _WaveformPainter extends CustomPainter {
+  final double phase;
+
+  _WaveformPainter({required this.phase});
+
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
@@ -969,8 +1012,15 @@ class _WaveformPainter extends CustomPainter {
 
     for (double x = 0; x <= size.width; x++) {
       final normalized = x / size.width;
-      final cyanY = size.height * (0.50 + 0.22 * math.sin(normalized * 8 * math.pi) + 0.08 * math.sin(normalized * 20 * math.pi));
-      final purpleY = size.height * (0.56 + 0.20 * math.sin(normalized * 7 * math.pi + 1.4) + 0.10 * math.sin(normalized * 18 * math.pi));
+      final animated = normalized + (phase * 1.8);
+      final cyanY = size.height *
+          (0.50 +
+              0.22 * math.sin(animated * 8 * math.pi) +
+              0.08 * math.sin(animated * 20 * math.pi));
+      final purpleY = size.height *
+          (0.56 +
+              0.20 * math.sin(animated * 7 * math.pi + 1.4) +
+              0.10 * math.sin(animated * 18 * math.pi + 0.6));
       cyanPath.lineTo(x, cyanY);
       purplePath.lineTo(x, purpleY);
     }
@@ -1035,10 +1085,15 @@ class _WaveformPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _WaveformPainter oldDelegate) =>
+      oldDelegate.phase != phase;
 }
 
 class _FogTrendPainter extends CustomPainter {
+  final double phase;
+
+  _FogTrendPainter({required this.phase});
+
   @override
   void paint(Canvas canvas, Size size) {
     final topZone = Rect.fromLTWH(0, 0, size.width, size.height * 0.38);
@@ -1064,10 +1119,18 @@ class _FogTrendPainter extends CustomPainter {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
     }
 
-    final values = [0.82, 0.72, 0.56, 0.66, 0.36, 0.54, 0.40, 0.14];
+    final baseValues = [0.82, 0.72, 0.56, 0.66, 0.36, 0.54, 0.40, 0.14];
     final points = <Offset>[];
-    for (int i = 0; i < values.length; i++) {
-      points.add(Offset(size.width * (i / (values.length - 1)), size.height * values[i]));
+    for (int i = 0; i < baseValues.length; i++) {
+      final wave = 0.10 * math.sin((phase * 2 * math.pi) + (i * 0.72));
+      final drift = 0.04 * math.cos((phase * 4 * math.pi) + (i * 0.45));
+      final animatedValue = (baseValues[i] + wave + drift).clamp(0.10, 0.88);
+      points.add(
+        Offset(
+          size.width * (i / (baseValues.length - 1)),
+          size.height * animatedValue,
+        ),
+      );
     }
 
     final path = Path()..moveTo(points.first.dx, points.first.dy);
@@ -1107,5 +1170,6 @@ class _FogTrendPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _FogTrendPainter oldDelegate) =>
+      oldDelegate.phase != phase;
 }

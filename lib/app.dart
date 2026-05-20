@@ -5,6 +5,7 @@ import 'package:parkinson_insole_app/screens/ble_scan_screen.dart';
 import 'package:parkinson_insole_app/screens/device_connection_screen.dart';
 import 'package:parkinson_insole_app/screens/dashboard_screen.dart';
 import 'package:parkinson_insole_app/screens/analytics_screen.dart';
+import 'package:parkinson_insole_app/screens/help_screen.dart';
 import 'package:parkinson_insole_app/screens/device_status_screen.dart';
 import 'package:parkinson_insole_app/screens/settings_screen.dart';
 import 'package:parkinson_insole_app/theme/app_theme.dart';
@@ -39,6 +40,8 @@ class ParkinsonInsoleApp extends StatelessWidget {
             page = const DashboardScreen();
           case '/analytics':
             page = const AnalyticsScreen();
+          case '/help':
+            page = const HelpScreen();
           case '/status':
             page = const DeviceStatusScreen();
           case '/settings':
