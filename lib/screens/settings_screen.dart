@@ -84,14 +84,6 @@ class SettingsScreen extends StatelessWidget {
                 onChanged: (_) => settings.toggleMockData(),
                 accentColor: AppColors.warningOrange,
               ),
-              _SettingsTile(
-                title: AppStrings.settingsDeveloperMode,
-                subtitle: 'Show debug console and raw BLE data',
-                value: settings.isDeveloperMode,
-                onChanged: (_) => settings.toggleDeveloperMode(),
-                accentColor: AppColors.secondaryPurple,
-              ),
-
               const SizedBox(height: 16),
 
               // ── Target Device Name ────────────────────────────────────

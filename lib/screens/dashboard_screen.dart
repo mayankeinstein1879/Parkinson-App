@@ -63,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     if (index == 0) {
       setState(() => _selectedTab = 0);
     } else {
-      const routes = ['', '/scan', '/status', '/settings', '/debug'];
+      const routes = ['', '/scan', '/status', '/settings'];
       Navigator.pushNamed(context, routes[index]);
     }
   }
@@ -390,7 +390,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           _buildSidebarIcon(Icons.analytics_outlined, false, () {}),
           _buildSidebarIcon(Icons.monitor_heart_outlined, false, () => Navigator.pushNamed(context, '/status')),
           _buildSidebarIcon(Icons.settings_outlined, false, () => Navigator.pushNamed(context, '/settings')),
-          _buildSidebarIcon(Icons.bug_report_outlined, false, () => Navigator.pushNamed(context, '/debug')),
           _buildSidebarIcon(Icons.help_outline, false, () {}),
 
           const Spacer(),
@@ -536,20 +535,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   ),
 
                   // â”€â”€ CENTER: AI Holographic Visualization â”€â”€
-                  SizedBox(
-                    width: 260,
-                    height: 64,
-                    child: AnimatedBuilder(
-                      animation: _waveController,
-                      builder: (context, _) {
-                        return CustomPaint(
-                          painter: _AiHolographicPainter(
-                            animValue: _waveController.value,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
 
                   // â”€â”€ RIGHT: Notification + Profile â”€â”€
                   Row(
@@ -1822,6 +1807,222 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 }
 
 // 1. Premium Glowing Walking Human Silhouette (Header Center) — matches reference image 2
+class _HeaderWalkingPreview extends StatelessWidget {
+  final double animValue;
+
+  const _HeaderWalkingPreview({required this.animValue});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 220,
+      height: 68,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0x99050A1A),
+            Color(0xCC09162A),
+            Color(0x99050A1A),
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.primaryCyan.withOpacity(0.14),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.glowCyan.withOpacity(0.14),
+            blurRadius: 16,
+            spreadRadius: -2,
+          ),
+        ],
+      ),
+      child: CustomPaint(
+        painter: _HeaderWalkingFigurePainter(animValue: animValue),
+      ),
+    );
+  }
+}
+
+class _HeaderWalkingFigurePainter extends CustomPainter {
+  final double animValue;
+
+  _HeaderWalkingFigurePainter({required this.animValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const cyan = Color(0xFF7DEBFF);
+    const cyanCore = Color(0xFF35DFFF);
+    const cyanDim = Color(0xFF4EB7D8);
+
+    Paint glowStroke(Color color, double width, double blurSigma) => Paint()
+      ..color = color
+      ..strokeWidth = width
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
+      ..style = PaintingStyle.stroke;
+
+    Paint crispStroke(Color color, double width) => Paint()
+      ..color = color
+      ..strokeWidth = width
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    Paint glowFill(Color color, double blurSigma) => Paint()
+      ..color = color
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
+      ..style = PaintingStyle.fill;
+
+    final pulse = 0.55 + (math.sin(animValue * 2 * math.pi) * 0.18);
+    final floorGlowCenter = Offset(size.width * 0.66, size.height * 0.78);
+
+    final backgroundGlow = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          Colors.transparent,
+          AppColors.primaryCyan.withOpacity(0.06),
+          Colors.transparent,
+        ],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ).createShader(Offset.zero & size);
+    canvas.drawRect(Offset.zero & size, backgroundGlow);
+
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: floorGlowCenter,
+        width: size.width * 0.22,
+        height: size.height * 0.10,
+      ),
+      glowFill(AppColors.primaryCyan.withOpacity(0.20 * pulse), 10),
+    );
+
+    canvas.drawLine(
+      Offset(size.width * 0.18, size.height * 0.82),
+      Offset(size.width * 0.84, size.height * 0.82),
+      glowStroke(AppColors.primaryCyan.withOpacity(0.12), 2, 4),
+    );
+
+    final figureHeight = size.height * 0.70;
+    final figureWidth = figureHeight * 0.42;
+    final origin = Offset(size.width * 0.42, size.height * 0.12);
+
+    double x(double fraction) => origin.dx + figureWidth * fraction;
+    double y(double fraction) => origin.dy + figureHeight * fraction;
+
+    final headCenter = Offset(x(0.46), y(0.10));
+    final headRadius = figureHeight * 0.09;
+    final neck = Offset(x(0.43), y(0.22));
+    final shoulderBack = Offset(x(0.30), y(0.27));
+    final shoulderFront = Offset(x(0.53), y(0.29));
+    final chest = Offset(x(0.51), y(0.40));
+    final spineMid = Offset(x(0.40), y(0.43));
+    final hipFront = Offset(x(0.48), y(0.60));
+    final hipBack = Offset(x(0.36), y(0.60));
+
+    final frontElbow = Offset(x(0.62), y(0.46));
+    final frontHand = Offset(x(0.56), y(0.66));
+    final backElbow = Offset(x(0.23), y(0.44));
+    final backHand = Offset(x(0.18), y(0.62));
+
+    final frontKnee = Offset(x(0.61), y(0.76));
+    final frontAnkle = Offset(x(0.68), y(0.95));
+    final frontToe = Offset(x(0.80), y(0.96));
+    final backKnee = Offset(x(0.29), y(0.78));
+    final backAnkle = Offset(x(0.24), y(0.97));
+    final backToe = Offset(x(0.14), y(0.98));
+
+    final torsoPath = Path()
+      ..moveTo(neck.dx, neck.dy)
+      ..quadraticBezierTo(x(0.56), y(0.31), chest.dx, chest.dy)
+      ..quadraticBezierTo(x(0.49), y(0.53), hipFront.dx, hipFront.dy)
+      ..lineTo(hipBack.dx, hipBack.dy)
+      ..quadraticBezierTo(x(0.28), y(0.46), spineMid.dx, spineMid.dy)
+      ..quadraticBezierTo(x(0.24), y(0.31), shoulderBack.dx, shoulderBack.dy)
+      ..close();
+
+    canvas.drawPath(
+      torsoPath,
+      glowFill(AppColors.primaryCyan.withOpacity(0.12), 8),
+    );
+    canvas.drawPath(torsoPath, glowStroke(cyanCore.withOpacity(0.45), 3, 5));
+    canvas.drawPath(torsoPath, crispStroke(cyanDim, 1.4));
+
+    void drawLimb(List<Offset> points, {double glowWidth = 4.0, double crispWidth = 1.6}) {
+      for (int i = 0; i < points.length - 1; i++) {
+        canvas.drawLine(
+          points[i],
+          points[i + 1],
+          glowStroke(cyanCore.withOpacity(0.42), glowWidth, 4),
+        );
+        canvas.drawLine(
+          points[i],
+          points[i + 1],
+          crispStroke(cyan, crispWidth),
+        );
+      }
+    }
+
+    drawLimb([neck, shoulderFront, frontElbow, frontHand], glowWidth: 4.2);
+    drawLimb([shoulderBack, backElbow, backHand], glowWidth: 3.8, crispWidth: 1.4);
+    drawLimb([hipFront, frontKnee, frontAnkle, frontToe], glowWidth: 4.6, crispWidth: 1.8);
+    drawLimb([hipBack, backKnee, backAnkle, backToe], glowWidth: 4.0, crispWidth: 1.5);
+    drawLimb([shoulderBack, shoulderFront], glowWidth: 3.6, crispWidth: 1.3);
+    drawLimb([neck, spineMid, hipBack], glowWidth: 3.4, crispWidth: 1.2);
+
+    for (final joint in [
+      shoulderFront,
+      frontElbow,
+      hipFront,
+      frontKnee,
+      frontAnkle,
+    ]) {
+      canvas.drawCircle(joint, figureHeight * 0.015, glowFill(cyanCore.withOpacity(0.40), 4));
+      canvas.drawCircle(joint, figureHeight * 0.009, Paint()..color = cyan);
+    }
+
+    canvas.drawCircle(
+      headCenter,
+      headRadius * 1.35,
+      glowFill(AppColors.primaryCyan.withOpacity(0.16), 8),
+    );
+    canvas.drawCircle(
+      headCenter,
+      headRadius,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            Colors.white.withOpacity(0.28),
+            cyanCore.withOpacity(0.20),
+            Colors.transparent,
+          ],
+        ).createShader(Rect.fromCircle(center: headCenter, radius: headRadius))
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawCircle(headCenter, headRadius, glowStroke(cyanCore.withOpacity(0.50), 3, 4));
+    canvas.drawCircle(headCenter, headRadius, crispStroke(cyan, 1.3));
+
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(frontToe.dx, frontToe.dy + 1),
+        width: figureWidth * 0.34,
+        height: figureHeight * 0.06,
+      ),
+      glowFill(AppColors.primaryCyan.withOpacity(0.28 * pulse), 8),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HeaderWalkingFigurePainter old) =>
+      old.animValue != animValue;
+}
+
 class _AiHolographicPainter extends CustomPainter {
   final double animValue;
   _AiHolographicPainter({required this.animValue});
@@ -2588,10 +2789,6 @@ class _BottomNav extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.settings_outlined),
           label: 'Settings',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.bug_report_outlined),
-          label: 'Debug',
         ),
       ],
     );
