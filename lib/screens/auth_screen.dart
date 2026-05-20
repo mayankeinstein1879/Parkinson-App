@@ -153,7 +153,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                             color: Colors.white,
                             size: 28,
                           ),
-                        ).animate().scale(duration: 500.ms, curve: Curves.backOut),
+                        ).animate().scale(duration: 500.ms, curve: Curves.easeOutBack),
                         const SizedBox(height: 16),
                         Text(
                           AppStrings.appName.toUpperCase(),
