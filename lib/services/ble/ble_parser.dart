@@ -71,11 +71,11 @@ class BleParser {
 
     try {
       final pressure   = _extractPressure(bytes, offset: 1);
-      final stability  = bytes[9].toDouble().clamp(0, 100);
-      final fogRisk    = bytes[10].toDouble().clamp(0, 100);
+      final stability  = bytes[9].toDouble().clamp(0.0, 100.0);
+      final fogRisk    = bytes[10].toDouble().clamp(0.0, 100.0);
       final cadence    = _readUint16BE(bytes, 11) / BleConstants.cadenceScaleFactor;
-      final asymmetry  = bytes[13].toDouble().clamp(0, 100);
-      final confidence = bytes[14].toDouble().clamp(0, 100);
+      final asymmetry  = bytes[13].toDouble().clamp(0.0, 100.0);
+      final confidence = bytes[14].toDouble().clamp(0.0, 100.0);
       final battery    = bytes[15].clamp(0, 100);
       final cueActive  = bytes[16] != 0;
 
@@ -127,10 +127,10 @@ class BleParser {
       timestamp:         DateTime.now(),
       side:              side,
       pressure:          PressureZone.zero(),
-      gaitStability:     bytes[1].toDouble().clamp(0, 100),
-      fogRisk:           bytes[2].toDouble().clamp(0, 100),
+      gaitStability:     bytes[1].toDouble().clamp(0.0, 100.0),
+      fogRisk:           bytes[2].toDouble().clamp(0.0, 100.0),
       stepCadence:       _readUint16BE(bytes, 3) / BleConstants.cadenceScaleFactor,
-      gaitAsymmetry:     bytes[5].toDouble().clamp(0, 100),
+      gaitAsymmetry:     bytes[5].toDouble().clamp(0.0, 100.0),
       batteryLevel:      0,
       cueActive:         bytes[6] != 0,
       walkingConfidence: 0,

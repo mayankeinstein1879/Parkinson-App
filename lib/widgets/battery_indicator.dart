@@ -96,7 +96,7 @@ class _BatteryPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final borderPaint = Paint()
-      ..color = color.withOpacity(0.8)
+      ..color = color.withValues(alpha: 0.8)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
@@ -122,7 +122,7 @@ class _BatteryPainter extends CustomPainter {
     );
 
     // Fill level
-    final fillWidth = ((size.width - 7) * fill).clamp(0, size.width - 7);
+    final fillWidth = ((size.width - 7) * fill).clamp(0.0, size.width - 7);
     if (fillWidth > 0) {
       canvas.drawRRect(
         RRect.fromRectAndRadius(

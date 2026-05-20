@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'app_colors.dart';
+import 'package:parkinson_insole_app/constants/app_colors.dart';
 
 /// App-wide theme configuration.
 /// Uses a futuristic dark medical-tech aesthetic with neon cyan/purple accents.
@@ -45,7 +45,7 @@ class AppTheme {
       ),
 
       // ── Card ──────────────────────────────────────────────────────────────
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -197,7 +197,7 @@ class AppTheme {
       ),
 
       // ── Dialog ────────────────────────────────────────────────────────────
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.dialogBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
