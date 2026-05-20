@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkinson_insole_app/screens/splash_screen.dart';
+import 'package:parkinson_insole_app/screens/auth_screen.dart';
 import 'package:parkinson_insole_app/screens/ble_scan_screen.dart';
 import 'package:parkinson_insole_app/screens/device_connection_screen.dart';
 import 'package:parkinson_insole_app/screens/dashboard_screen.dart';
@@ -28,6 +29,8 @@ class ParkinsonInsoleApp extends StatelessWidget {
         switch (settings.name) {
           case '/':
             page = const SplashScreen();
+          case '/auth':
+            page = const AuthScreen();
           case '/scan':
             page = const BleScanScreen();
           case '/connect':

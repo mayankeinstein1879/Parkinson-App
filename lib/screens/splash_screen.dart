@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
     }
 
     if (mounted) {
-      Navigator.pushReplacementNamed(context, '/scan');
+      Navigator.pushReplacementNamed(context, '/auth');
     }
   }
 
