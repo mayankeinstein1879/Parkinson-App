@@ -430,130 +430,310 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // Top Header Area
+  // Top Header Area — premium cinematic design matching reference
   Widget _buildHeader(BuildContext context) {
     return Consumer2<BleProvider, TelemetryProvider>(
       builder: (context, ble, tele, _) {
         final avgBatteryL = tele.leftData.batteryLevel;
         final avgBatteryR = tele.rightData.batteryLevel;
 
-        return Row(
-          children: [
-            // Title & Subtitle
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'FOG Detection System',
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.textPrimary,
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  Text(
-                    AppStrings.appTagline,
-                    style: GoogleFonts.inter(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF060E1E),
+                Color(0xFF0B1A30),
+                Color(0xFF0D1F38),
+                Color(0xFF0B1A30),
+                Color(0xFF060E1E),
+              ],
+              stops: [0.0, 0.2, 0.5, 0.8, 1.0],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
-
-            // AI node graphics placeholder
-            Container(
-              width: 140,
-              height: 50,
-              margin: const EdgeInsets.only(right: 24),
-              child: CustomPaint(
-                painter: _AiNetworkPainter(),
-              ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFF00E5FF).withOpacity(0.08),
+              width: 1,
             ),
-
-            // Session Stats, Profile, Bell
-            Row(
-              children: [
-                // Notification Bell
-                Stack(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.notifications_none, color: AppColors.textPrimary, size: 22),
-                      onPressed: () {},
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppColors.alertRed,
-                          shape: BoxShape.circle,
-                        ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF00E5FF).withOpacity(0.04),
+                blurRadius: 30,
+                spreadRadius: 0,
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Ambient center glow behind AI graphic
+              Positioned(
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    width: 280,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        colors: [
+                          const Color(0xFF0080FF).withOpacity(0.12),
+                          Colors.transparent,
+                        ],
+                        radius: 1.0,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-                const SizedBox(width: 16),
+              ),
 
-                // Stats & Profile Box
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.cardBorder),
-                  ),
-                  child: Row(
-                    children: [
-                      // Profile Avatar
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundColor: AppColors.surface,
-                        child: const Icon(Icons.person, color: AppColors.primaryCyan, size: 18),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Robert Jensen',
-                            style: GoogleFonts.inter(
-                              color: AppColors.textPrimary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+              // Main layout row
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // ── LEFT: Title + Subtitle ──
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [Colors.white, Color(0xFFB8D4F0)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds),
+                          child: Text(
+                            'FOG Detection System',
+                            style: GoogleFonts.orbitron(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                              height: 1.1,
                             ),
                           ),
-                          Row(
-                            children: [
-                              const Icon(Icons.access_time_filled, color: AppColors.textSecondary, size: 10),
-                              const SizedBox(width: 4),
-                              Text(
-                                _formatDuration(_sessionDuration),
-                                style: GoogleFonts.orbitron(color: AppColors.textSecondary, fontSize: 10),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'AI-Assisted Gait Monitoring & Adaptive Cueing',
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFF6B8FAF),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── CENTER: AI Holographic Visualization ──
+                  SizedBox(
+                    width: 260,
+                    height: 64,
+                    child: AnimatedBuilder(
+                      animation: _waveController,
+                      builder: (context, _) {
+                        return CustomPaint(
+                          painter: _AiHolographicPainter(
+                            animValue: _waveController.value,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // ── RIGHT: Notification + Profile ──
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Notification bell
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            width: 38,
+                            height: 38,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0D1B2E),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFF00E5FF).withOpacity(0.2),
+                                width: 1,
                               ),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.sync, color: AppColors.accentGreen, size: 10),
-                              const SizedBox(width: 4),
-                              Text(
-                                'L: $avgBatteryL% | R: $avgBatteryR%',
-                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 9),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF00E5FF).withOpacity(0.08),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.notifications_outlined,
+                              color: Color(0xFFE8F4FF),
+                              size: 18,
+                            ),
+                          ),
+                          Positioned(
+                            top: -1,
+                            right: -1,
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: AppColors.alertRed,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.alertRed.withOpacity(0.6),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
+                      const SizedBox(width: 12),
+
+                      // Premium profile card
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF0E1F35), Color(0xFF121E30)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: const Color(0xFF00E5FF).withOpacity(0.18),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF00E5FF).withOpacity(0.06),
+                              blurRadius: 16,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Avatar
+                            Container(
+                              width: 34,
+                              height: 34,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF1A3A5C), Color(0xFF0D2240)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                border: Border.all(
+                                  color: const Color(0xFF00E5FF).withOpacity(0.35),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF00E5FF).withOpacity(0.15),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                color: Color(0xFF00E5FF),
+                                size: 17,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+
+                            // Name + stats
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Robert Jensen',
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFFE8F4FF),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time_rounded,
+                                      color: Color(0xFF5A7A9A),
+                                      size: 9,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      _formatDuration(_sessionDuration),
+                                      style: GoogleFonts.orbitron(
+                                        color: const Color(0xFF5A7A9A),
+                                        fontSize: 9,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Icon(
+                                      Icons.sync_rounded,
+                                      color: Color(0xFF00FF88),
+                                      size: 9,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      'Synchronized',
+                                      style: GoogleFonts.inter(
+                                        color: const Color(0xFF00FF88),
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'L: $avgBatteryL%  R: $avgBatteryR%',
+                                      style: const TextStyle(
+                                        color: Color(0xFF5A7A9A),
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 6),
+                            const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Color(0xFF5A7A9A),
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -1641,73 +1821,236 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 }
 
-// ── CUSTOM PAINTERS ─────────────────────────────────────────────────────────
+// 1. Premium AI Holographic Visualization (Header Center) — matches reference image
+class _AiHolographicPainter extends CustomPainter {
+  final double animValue;
+  _AiHolographicPainter({required this.animValue});
 
-// 1. Brain/AI Node network graphics (Header Center)
-class _AiNetworkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paintLine = Paint()
-      ..color = AppColors.primaryCyan.withOpacity(0.3)
-      ..strokeWidth = 1;
-    final paintNode = Paint()
-      ..color = AppColors.primaryCyan
-      ..style = PaintingStyle.fill;
-    final paintCenter = Paint()
-      ..color = AppColors.secondaryPurple
+    final w = size.width;
+    final h = size.height;
+    final cx = w / 2;
+    final cy = h / 2;
+
+    final linePaint = Paint()
+      ..color = const Color(0xFF00B4D8).withOpacity(0.55)
+      ..strokeWidth = 0.8
+      ..style = PaintingStyle.stroke;
+
+    final glowLinePaint = Paint()
+      ..color = const Color(0xFF00E5FF).withOpacity(0.15)
+      ..strokeWidth = 3
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
+      ..style = PaintingStyle.stroke;
+
+    final nodePaint = Paint()
+      ..color = const Color(0xFF00E5FF)
       ..style = PaintingStyle.fill;
 
-    // Node locations
-    final nodes = [
-      Offset(15, size.height / 2),
-      Offset(40, 10),
-      Offset(40, size.height - 10),
-      Offset(70, size.height / 2), // AI box
-      Offset(100, 10),
-      Offset(100, size.height - 10),
-      Offset(125, size.height / 2),
+    final centerGlowPaint = Paint()
+      ..color = const Color(0xFF0080FF).withOpacity(0.18)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14)
+      ..style = PaintingStyle.fill;
+
+    // ── 1. Brain hemisphere (left half of composition) ──
+    final brainRect = Rect.fromCenter(
+      center: Offset(cx - 80, cy),
+      width: 78,
+      height: 54,
+    );
+
+    // Outer ambient glow for brain
+    canvas.drawOval(
+      brainRect.inflate(6),
+      Paint()
+        ..color = const Color(0xFF00B4D8).withOpacity(0.08)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12)
+        ..style = PaintingStyle.fill,
+    );
+
+    // Brain outline path — hemisphere shape
+    final brainPath = Path();
+    final bx = brainRect.left;
+    final by = brainRect.top;
+    final bw = brainRect.width;
+    final bh = brainRect.height;
+    brainPath.moveTo(bx + bw * 0.5, by + bh);
+    brainPath.cubicTo(bx, by + bh, bx - bw * 0.05, by + bh * 0.3, bx + bw * 0.15, by + bh * 0.05);
+    brainPath.cubicTo(bx + bw * 0.35, by - bh * 0.1, bx + bw * 0.65, by - bh * 0.1, bx + bw * 0.85, by + bh * 0.05);
+    brainPath.cubicTo(bx + bw * 1.05, by + bh * 0.3, bx + bw, by + bh, bx + bw * 0.5, by + bh);
+    brainPath.close();
+
+    canvas.drawPath(brainPath, glowLinePaint);
+    canvas.drawPath(brainPath, linePaint);
+
+    // Brain fold lines
+    final foldPaint = Paint()
+      ..color = const Color(0xFF00B4D8).withOpacity(0.35)
+      ..strokeWidth = 0.6
+      ..style = PaintingStyle.stroke;
+    canvas.drawArc(
+      Rect.fromCenter(center: Offset(bx + bw * 0.38, by + bh * 0.4), width: bw * 0.4, height: bh * 0.45),
+      math.pi * 0.8, math.pi * 0.9, false, foldPaint,
+    );
+    canvas.drawArc(
+      Rect.fromCenter(center: Offset(bx + bw * 0.62, by + bh * 0.4), width: bw * 0.4, height: bh * 0.45),
+      math.pi * 1.3, math.pi * 0.9, false, foldPaint,
+    );
+
+    // ── 2. Neural connection network (left panel → center) ──
+    final neuralNodes = [
+      Offset(cx - 55, cy - 14),
+      Offset(cx - 42, cy + 10),
+      Offset(cx - 28, cy - 6),
+      Offset(cx - 15, cy + 14),
     ];
 
-    // Connections
-    canvas.drawLine(nodes[0], nodes[1], paintLine);
-    canvas.drawLine(nodes[0], nodes[2], paintLine);
-    canvas.drawLine(nodes[1], nodes[3], paintLine);
-    canvas.drawLine(nodes[2], nodes[3], paintLine);
-    canvas.drawLine(nodes[3], nodes[4], paintLine);
-    canvas.drawLine(nodes[3], nodes[5], paintLine);
-    canvas.drawLine(nodes[4], nodes[6], paintLine);
-    canvas.drawLine(nodes[5], nodes[6], paintLine);
-    canvas.drawLine(nodes[1], nodes[4], paintLine);
-    canvas.drawLine(nodes[2], nodes[5], paintLine);
-
-    // Draw node circles
-    for (int i = 0; i < nodes.length; i++) {
-      if (i == 3) {
-        // Center node represents AI
-        canvas.drawCircle(nodes[i], 6, paintCenter);
-      } else {
-        canvas.drawCircle(nodes[i], 3, paintNode);
-      }
+    for (int i = 0; i < neuralNodes.length - 1; i++) {
+      canvas.drawLine(neuralNodes[i], neuralNodes[i + 1], glowLinePaint);
+      canvas.drawLine(neuralNodes[i], neuralNodes[i + 1], linePaint);
+    }
+    // Extra cross connections
+    if (neuralNodes.length > 2) {
+      canvas.drawLine(neuralNodes[0], neuralNodes[2], linePaint..color = const Color(0xFF00B4D8).withOpacity(0.25));
     }
 
-    // AI Badge Text
-    final textPainter = TextPainter(
+    for (final n in neuralNodes) {
+      canvas.drawCircle(n, 2.2, nodePaint..color = const Color(0xFF00D4F0));
+      canvas.drawCircle(n, 4,
+        Paint()
+          ..color = const Color(0xFF00E5FF).withOpacity(0.2)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
+          ..style = PaintingStyle.fill);
+    }
+
+    // ── 3. Center AI badge ──
+    final aiCenter = Offset(cx, cy);
+    final aiSize = 28.0;
+    final aiRect = Rect.fromCenter(center: aiCenter, width: aiSize * 2, height: aiSize * 2);
+
+    // Outer ambient glow
+    canvas.drawRect(aiRect.inflate(8), centerGlowPaint);
+
+    // Rounded square badge
+    final aiRRect = RRect.fromRectAndRadius(aiRect, const Radius.circular(8));
+    canvas.drawRRect(
+      aiRRect,
+      Paint()
+        ..color = const Color(0xFF062040)
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawRRect(
+      aiRRect,
+      Paint()
+        ..color = const Color(0xFF00E5FF).withOpacity(0.6)
+        ..strokeWidth = 1.2
+        ..style = PaintingStyle.stroke,
+    );
+    // Inner glow on badge
+    canvas.drawRRect(
+      aiRRect.inflate(-2),
+      Paint()
+        ..color = const Color(0xFF0080FF).withOpacity(0.12)
+        ..style = PaintingStyle.fill,
+    );
+
+    // "AI" text in badge
+    final tp = TextPainter(
       text: const TextSpan(
         text: 'AI',
         style: TextStyle(
-          color: Colors.white,
-          fontSize: 7,
-          fontWeight: FontWeight.bold,
+          color: Color(0xFF00E5FF),
+          fontSize: 13,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1,
         ),
       ),
       textDirection: TextDirection.ltr,
     );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(nodes[3].dx - 4, nodes[3].dy - 5));
+    tp.layout();
+    tp.paint(canvas, Offset(aiCenter.dx - tp.width / 2, aiCenter.dy - tp.height / 2));
+
+    // Pulsing ring around AI badge (animated)
+    final pulseRadius = aiSize + 6 + math.sin(animValue * 2 * math.pi) * 3;
+    canvas.drawCircle(
+      aiCenter, pulseRadius,
+      Paint()
+        ..color = const Color(0xFF00E5FF).withOpacity(0.2 - animValue * 0.1)
+        ..strokeWidth = 1
+        ..style = PaintingStyle.stroke,
+    );
+
+    // ── 4. Connection lines right side (center → walking figure) ──
+    final rightNodes = [
+      Offset(cx + 18, cy - 10),
+      Offset(cx + 32, cy + 12),
+      Offset(cx + 48, cy - 4),
+      Offset(cx + 60, cy + 8),
+    ];
+
+    final rLinePaint = Paint()
+      ..color = const Color(0xFF00B4D8).withOpacity(0.55)
+      ..strokeWidth = 0.8
+      ..style = PaintingStyle.stroke;
+    final rGlowPaint = Paint()
+      ..color = const Color(0xFF00E5FF).withOpacity(0.15)
+      ..strokeWidth = 3
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i < rightNodes.length - 1; i++) {
+      canvas.drawLine(rightNodes[i], rightNodes[i + 1], rGlowPaint);
+      canvas.drawLine(rightNodes[i], rightNodes[i + 1], rLinePaint);
+    }
+    for (final n in rightNodes) {
+      canvas.drawCircle(n, 2.0,
+        Paint()..color = const Color(0xFF00D4F0)..style = PaintingStyle.fill);
+    }
+
+    // ── 5. Walking human silhouette (right of composition) ──
+    final figX = cx + 90.0;
+    final figGlowPaint = Paint()
+      ..color = const Color(0xFF00B4D8).withOpacity(0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8;
+    final figLinePaint = Paint()
+      ..color = const Color(0xFF00D4F0).withOpacity(0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    // Head
+    canvas.drawCircle(Offset(figX, cy - 20), 6,
+      Paint()..color = const Color(0xFF00D4F0).withOpacity(0.0)..style = PaintingStyle.fill);
+    canvas.drawCircle(Offset(figX, cy - 20), 6, figGlowPaint);
+    canvas.drawCircle(Offset(figX, cy - 20), 6, figLinePaint);
+
+    // Torso
+    canvas.drawLine(Offset(figX, cy - 14), Offset(figX, cy + 4), figGlowPaint);
+    canvas.drawLine(Offset(figX, cy - 14), Offset(figX, cy + 4), figLinePaint);
+
+    // Arms (walking pose — one forward, one back)
+    canvas.drawLine(Offset(figX, cy - 8), Offset(figX - 8, cy + 4), figGlowPaint);
+    canvas.drawLine(Offset(figX, cy - 8), Offset(figX - 8, cy + 4), figLinePaint);
+    canvas.drawLine(Offset(figX, cy - 8), Offset(figX + 8, cy - 2), figGlowPaint);
+    canvas.drawLine(Offset(figX, cy - 8), Offset(figX + 8, cy - 2), figLinePaint);
+
+    // Legs (walking pose)
+    canvas.drawLine(Offset(figX, cy + 4), Offset(figX - 7, cy + 18), figGlowPaint);
+    canvas.drawLine(Offset(figX, cy + 4), Offset(figX - 7, cy + 18), figLinePaint);
+    canvas.drawLine(Offset(figX, cy + 4), Offset(figX + 6, cy + 18), figGlowPaint);
+    canvas.drawLine(Offset(figX, cy + 4), Offset(figX + 6, cy + 18), figLinePaint);
+
+    // Lower legs
+    canvas.drawLine(Offset(figX - 7, cy + 18), Offset(figX - 5, cy + 30), figGlowPaint);
+    canvas.drawLine(Offset(figX - 7, cy + 18), Offset(figX - 5, cy + 30), figLinePaint);
+    canvas.drawLine(Offset(figX + 6, cy + 18), Offset(figX + 10, cy + 28), figGlowPaint);
+    canvas.drawLine(Offset(figX + 6, cy + 18), Offset(figX + 10, cy + 28), figLinePaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _AiHolographicPainter old) => old.animValue != animValue;
 }
 
 // ── PREMIUM REUSABLE WIDGETS ─────────────────────────────────────────────────
