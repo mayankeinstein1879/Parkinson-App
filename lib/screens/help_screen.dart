@@ -45,30 +45,47 @@ class _HelpDesktopScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           flex: 7,
-                          child: Column(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Expanded(child: _SystemOverviewCard()),
-                                  SizedBox(width: 14),
-                                  Expanded(child: _MonitoringGuideCard()),
-                                  SizedBox(width: 14),
-                                  Expanded(child: _AnalyticsExplanationCard()),
-                                ],
+                              // Left Column
+                              Expanded(
+                                flex: 10,
+                                child: Column(
+                                  children: const [
+                                    _SystemOverviewCard(),
+                                    SizedBox(height: 14),
+                                    _AdaptiveCueGuideCard(),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(height: 14),
-                              const _EmergencyFeaturesCard(),
-                              const SizedBox(height: 14),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Expanded(child: _AdaptiveCueGuideCard()),
-                                  SizedBox(width: 14),
-                                  Expanded(child: _BleGuideCard()),
-                                  SizedBox(width: 14),
-                                  Expanded(child: _FutureAiCard()),
-                                ],
+                              const SizedBox(width: 14),
+                              // Right Columns
+                              Expanded(
+                                flex: 21,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: const [
+                                        Expanded(child: _MonitoringGuideCard()),
+                                        SizedBox(width: 14),
+                                        Expanded(child: _AnalyticsExplanationCard()),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 14),
+                                    const _EmergencyFeaturesCard(),
+                                    const SizedBox(height: 14),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: const [
+                                        Expanded(child: _BleGuideCard()),
+                                        SizedBox(width: 14),
+                                        Expanded(child: _FutureAiCard()),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -357,17 +374,45 @@ class _AiBadge extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: const Color(0xFF13283A),
-            border: Border.all(color: AppColors.primaryCyan.withOpacity(0.45)),
-          ),
-          child: Center(
-            child: Text(
-              'AI',
-              style: GoogleFonts.orbitron(
-                color: AppColors.primaryCyan,
-                fontSize: 30,
-                fontWeight: FontWeight.w800,
+            border: Border.all(color: AppColors.primaryCyan.withOpacity(0.45), width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryCyan.withOpacity(0.6),
+                blurRadius: 16,
               ),
-            ),
+            ],
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                Icons.chat_bubble_outline_rounded,
+                color: AppColors.primaryCyan.withOpacity(0.5),
+                size: 54,
+              ),
+              const Icon(
+                Icons.headset_mic_outlined,
+                color: AppColors.primaryCyan,
+                size: 44,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  'AI',
+                  style: GoogleFonts.orbitron(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.primaryCyan,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -379,11 +424,13 @@ class _HelpCard extends StatelessWidget {
   final String title;
   final Widget child;
   final Color borderColor;
+  final IconData? titleIcon;
 
   const _HelpCard({
     required this.title,
     required this.child,
     this.borderColor = const Color(0x2A8AB8DB),
+    this.titleIcon,
   });
 
   @override
@@ -405,13 +452,23 @@ class _HelpCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            title,
-            style: GoogleFonts.orbitron(
-              color: AppColors.textPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              if (titleIcon != null) ...[
+                Icon(titleIcon, color: AppColors.primaryCyan, size: 18),
+                const SizedBox(width: 8),
+              ],
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.orbitron(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           child,
@@ -435,16 +492,32 @@ class _SystemOverviewCard extends StatelessWidget {
           SizedBox(
             height: 118,
             child: Row(
-              children: const [
-                Expanded(child: _InsoleVisualTile()),
-                SizedBox(width: 10),
-                Expanded(child: _MedicalFigureTile()),
+              children: [
+                Expanded(
+                  child: Column(
+                    children: const [
+                      Text('Insole visualization', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+                      SizedBox(height: 6),
+                      Expanded(child: _InsoleVisualTile()),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    children: const [
+                      Expanded(child: _MedicalFigureTile()),
+                      SizedBox(height: 6),
+                      Text('AI medical illustration', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            'Parkinson’s assistance purpose, initiation, gait purpose, FOG monitoring, adaptive cueing overview',
+            'Parkinson’s assistance purpose, untitration, gait purposed, FOG monitoring, & adaptive cueing overview',
             style: GoogleFonts.inter(
               color: AppColors.textPrimary,
               fontSize: 12,
@@ -479,11 +552,6 @@ class _MonitoringGuideCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'BLE indicators, gait stability, FOG risk, and cadence explain the main monitoring cards.',
-            style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, height: 1.35),
-          ),
         ],
       ),
     );
@@ -511,7 +579,7 @@ class _AnalyticsExplanationCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'AI commentary example, neural-network visual accents, and analytics graph guidance.',
+            'AI commentary example, neunaneneric exampe, neural-network visual accents',
             style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, height: 1.35),
           ),
         ],
@@ -581,7 +649,7 @@ class _FutureAiCard extends StatelessWidget {
           const SizedBox(height: 92, child: _FutureAiVisual()),
           const SizedBox(height: 8),
           Text(
-            'A visionary, next-generation roadmap for predictive gait analysis, personalized therapy, caregiver cloud, adaptive ML, long-term tracking.',
+            'A visionary, next-generation roadmap - for predictive gait analysis, personalized therapy, caregiver cloud, adaptive ML, long-term tracking.',
             style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, height: 1.35),
           ),
         ],
@@ -597,6 +665,7 @@ class _AssistantTipsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _HelpCard(
       title: 'AI Assistant Tips',
+      titleIcon: Icons.smart_toy_outlined,
       borderColor: const Color(0x6A8AE7F5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -619,7 +688,7 @@ class _AssistantTipsCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            '- Stable gait detected.\n- Low BLE signal strength.\n- Cadence improving.\n- Battery optimization active.\n\n- Converse by the pageim tips.',
+            '- Stable gait detected.\n- Low BLE signal strength.\n- Cadence improving.\n- Battery optimization active.\n\n- Conver sx the bagemin tips.',
             style: GoogleFonts.inter(
               color: AppColors.textPrimary,
               fontSize: 12,
@@ -810,17 +879,27 @@ class _EmergencyVisualsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 84,
-      child: Row(
-        children: const [
-          Expanded(child: _WarningBubble(icon: Icons.warning_amber_rounded)),
-          SizedBox(width: 10),
-          Expanded(child: _WarningBubble(icon: Icons.notifications_active_outlined)),
-          SizedBox(width: 10),
-          Expanded(child: _SafetyWaveVisual()),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 52,
+          child: Row(
+            children: const [
+              Expanded(child: _WarningBubble(icon: Icons.warning_amber_rounded)),
+              SizedBox(width: 10),
+              Expanded(child: _WarningBubble(icon: Icons.notifications_active_outlined)),
+              SizedBox(width: 10),
+              Expanded(child: _SafetyWaveVisual()),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Use red neon accents, alert card style.\nFuturistic safety visuals emergency comms.',
+          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 10, height: 1.35),
+        ),
+      ],
     );
   }
 }
@@ -842,7 +921,7 @@ class _EmergencyExplainerTile extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          'Futuristic safety visuals for fall detection, SOS trigger, caregiver alerts, emergency comms.',
+          'Futuristic safety visuals for Fall detection, SOS trigger, caregiver alerts, emergency comms.',
           style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, height: 1.35),
         ),
       ],
@@ -966,7 +1045,7 @@ class _BleGuideCard extends StatelessWidget {
           const SizedBox(height: 92, child: _BleFlowVisual()),
           const SizedBox(height: 8),
           Text(
-            'Explain pairing, device states, sync, battery, and live connection status.',
+            'Explain pairing, device states, sync, battery. Explain pairing, device states, sync, battery.',
             style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, height: 1.35),
           ),
         ],
