@@ -126,15 +126,17 @@ class BleProvider extends ChangeNotifier {
 
   Future<void> disconnect() async {
     try {
-      await _bleManager.disconnect();
+      // Initiate BLE connection teardown in background so we don't hang if GATT disconnect stalls
+      unawaited(_bleManager.disconnect().catchError((e) {
+        AppLogger.error('Failed to disconnect cleanly in background', e, null);
+      }));
     } catch (e) {
-      AppLogger.error('Failed to disconnect cleanly', e, null);
-    } finally {
-      _connectedDeviceLeft  = null;
-      _connectedDeviceRight = null;
-      _connectionStatus     = ConnectionStatus.disconnected;
-      notifyListeners();
+      AppLogger.error('Failed to initiate disconnect', e, null);
     }
+    _connectedDeviceLeft  = null;
+    _connectedDeviceRight = null;
+    _connectionStatus     = ConnectionStatus.disconnected;
+    notifyListeners();
   }
 
   Future<void> reconnectDeviceOfSide(InsoleSide side) async {

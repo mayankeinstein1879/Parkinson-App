@@ -38,6 +38,7 @@ class GlowButton extends StatelessWidget {
           ? SystemMouseCursors.click
           : SystemMouseCursors.basic,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: isLoading ? null : onPressed,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
