@@ -109,35 +109,20 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     _buildHeader(context),
                     const SizedBox(height: 24),
 
-                    // Grid Workspace
+                    _buildRealTimeMonitoringSection(context),
+                    const SizedBox(height: 20),
+
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Left Grid Area (Telemetry, Insoles, Cues)
                         Expanded(
                           flex: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _buildRealTimeMonitoringSection(context),
-                              const SizedBox(height: 20),
-                              _buildAdaptiveCueSettingsSection(context),
-                            ],
-                          ),
+                          child: _buildAdaptiveCueSettingsSection(context),
                         ),
                         const SizedBox(width: 24),
-
-                        // Right Grid Area (AI Analytics, Emergency)
                         Expanded(
                           flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _buildAnalyticsSection(context),
-                              const SizedBox(height: 20),
-                              _buildEmergencySection(context),
-                            ],
-                          ),
+                          child: _buildEmergencySection(context),
                         ),
                       ],
                     ),
