@@ -82,7 +82,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // ── DESKTOP GRID LAYOUT ──────────────────────────────────────────────────
+  // â”€â”€ DESKTOP GRID LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   Widget _buildDesktopLayout(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -151,7 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // ── MOBILE LAYOUT ────────────────────────────────────────────────────────
+  // â”€â”€ MOBILE LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   Widget _buildMobileLayout(BuildContext context) {
     return Consumer3<BleProvider, TelemetryProvider, SettingsProvider>(
       builder: (context, ble, tele, settings, _) {
@@ -356,7 +356,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // ── DESKTOP SUBCOMPONENTS ────────────────────────────────────────────────
+  // â”€â”€ DESKTOP SUBCOMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   // Left Navigation Sidebar
   Widget _buildSidebar(BuildContext context) {
@@ -430,7 +430,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // Top Header Area — premium cinematic design matching reference
+  // Top Header Area â€” premium cinematic design matching reference
   Widget _buildHeader(BuildContext context) {
     return Consumer2<BleProvider, TelemetryProvider>(
       builder: (context, ble, tele, _) {
@@ -498,7 +498,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ── LEFT: Title + Subtitle ──
+                  // â”€â”€ LEFT: Title + Subtitle â”€â”€
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,7 +535,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     ),
                   ),
 
-                  // ── CENTER: AI Holographic Visualization ──
+                  // â”€â”€ CENTER: AI Holographic Visualization â”€â”€
                   SizedBox(
                     width: 260,
                     height: 64,
@@ -551,7 +551,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     ),
                   ),
 
-                  // ── RIGHT: Notification + Profile ──
+                  // â”€â”€ RIGHT: Notification + Profile â”€â”€
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -739,7 +739,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // ── LEFT SIDE GRIDS ──────────────────────────────────────────────────────
+  // â”€â”€ LEFT SIDE GRIDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   // Real-Time Monitoring Insoles
   Widget _buildRealTimeMonitoringSection(BuildContext context) {
@@ -822,7 +822,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // Desktop Individual Insole Card — premium pixel-faithful to reference image
+  // Desktop Individual Insole Card â€” premium pixel-faithful to reference image
   Widget _buildDesktopInsoleCard(
     BuildContext context,
     bool isLeft,
@@ -866,7 +866,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Header: Name | BLE badge + battery ring ──
+          // â”€â”€ Header: Name | BLE badge + battery ring â”€â”€
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -938,7 +938,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ),
           const SizedBox(height: 12),
 
-          // ── Body: Foot + Metrics ──
+          // â”€â”€ Body: Foot + Metrics â”€â”€
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -998,7 +998,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ),
           const SizedBox(height: 10),
 
-          // ── ECG heartbeat wave ──
+          // â”€â”€ ECG heartbeat wave â”€â”€
           SizedBox(
             height: 30,
             child: CustomPaint(
@@ -1407,7 +1407,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // ── RIGHT SIDE GRIDS ─────────────────────────────────────────────────────
+  // â”€â”€ RIGHT SIDE GRIDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   // AI Analytics Cards
   Widget _buildAnalyticsSection(BuildContext context) {
@@ -1821,7 +1821,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 }
 
-// 1. Premium AI Holographic Visualization (Header Center) — matches reference image
+// 1. Premium Glowing Walking Human Silhouette (Header Center) — matches reference image 2
 class _AiHolographicPainter extends CustomPainter {
   final double animValue;
   _AiHolographicPainter({required this.animValue});
@@ -1830,235 +1830,230 @@ class _AiHolographicPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
+
+    // The figure is centered horizontally, anchored so feet sit near bottom
     final cx = w / 2;
-    final cy = h / 2;
+    // Scale factor — figure height = ~90% of canvas height
+    final scale = h * 0.92;
 
-    final linePaint = Paint()
-      ..color = const Color(0xFF00B4D8).withOpacity(0.55)
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
+    // — Anatomy proportions (top = 0, bottom = 1 in figure space) —
+    // All positions as fractions of `scale`, centered on cx
+    final headR   = scale * 0.075;
+    final headCY  = headR + 2;                           // top of figure
+    final neckT   = headCY + headR;
+    final neckB   = neckT + scale * 0.04;
+    final shouldY = neckB;
+    final shouldW = scale * 0.22;
+    final torsoB  = shouldY + scale * 0.26;
+    final pelvisW = scale * 0.16;
 
-    final glowLinePaint = Paint()
-      ..color = const Color(0xFF00E5FF).withOpacity(0.15)
-      ..strokeWidth = 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
-      ..style = PaintingStyle.stroke;
+    final handR     = scale * 0.025;
 
-    final nodePaint = Paint()
-      ..color = const Color(0xFF00E5FF)
+    // — Paint helpers —
+    Paint glowFill(Color c, double blurSigma) => Paint()
+      ..color = c
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
       ..style = PaintingStyle.fill;
 
-    final centerGlowPaint = Paint()
-      ..color = const Color(0xFF0080FF).withOpacity(0.18)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14)
-      ..style = PaintingStyle.fill;
+    Paint glowStroke(Color c, double sw, double blurSigma) => Paint()
+      ..color = c
+      ..strokeWidth = sw
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
+      ..style = PaintingStyle.stroke;
 
-    // ── 1. Brain hemisphere (left half of composition) ──
-    final brainRect = Rect.fromCenter(
-      center: Offset(cx - 80, cy),
-      width: 78,
-      height: 54,
-    );
+    Paint crispStroke(Color c, double sw) => Paint()
+      ..color = c
+      ..strokeWidth = sw
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
 
-    // Outer ambient glow for brain
+    const cyan       = Color(0xFF00D8F0);
+    const cyanDim    = Color(0xFF0090B8);
+    const cyanBright = Color(0xFF40EEFF);
+
+    // — 1. Ground radial glow —
+    final groundY = h - 2.0;
+    final groundPulse = 0.25 + math.sin(animValue * 2 * math.pi) * 0.06;
     canvas.drawOval(
-      brainRect.inflate(6),
-      Paint()
-        ..color = const Color(0xFF00B4D8).withOpacity(0.08)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12)
-        ..style = PaintingStyle.fill,
+      Rect.fromCenter(center: Offset(cx, groundY), width: scale * 0.5, height: scale * 0.06),
+      glowFill(Color.fromRGBO(0, 128, 192, groundPulse), 12),
     );
 
-    // Brain outline path — hemisphere shape
-    final brainPath = Path();
-    final bx = brainRect.left;
-    final by = brainRect.top;
-    final bw = brainRect.width;
-    final bh = brainRect.height;
-    brainPath.moveTo(bx + bw * 0.5, by + bh);
-    brainPath.cubicTo(bx, by + bh, bx - bw * 0.05, by + bh * 0.3, bx + bw * 0.15, by + bh * 0.05);
-    brainPath.cubicTo(bx + bw * 0.35, by - bh * 0.1, bx + bw * 0.65, by - bh * 0.1, bx + bw * 0.85, by + bh * 0.05);
-    brainPath.cubicTo(bx + bw * 1.05, by + bh * 0.3, bx + bw, by + bh, bx + bw * 0.5, by + bh);
-    brainPath.close();
+    // actual top offset so figure is vertically centered in canvas
+    final topOff = (h - scale) / 2;
 
-    canvas.drawPath(brainPath, glowLinePaint);
-    canvas.drawPath(brainPath, linePaint);
+    // shorthand
+    double y(double frac) => topOff + frac * scale;
 
-    // Brain fold lines
-    final foldPaint = Paint()
-      ..color = const Color(0xFF00B4D8).withOpacity(0.35)
-      ..strokeWidth = 0.6
-      ..style = PaintingStyle.stroke;
-    canvas.drawArc(
-      Rect.fromCenter(center: Offset(bx + bw * 0.38, by + bh * 0.4), width: bw * 0.4, height: bh * 0.45),
-      math.pi * 0.8, math.pi * 0.9, false, foldPaint,
-    );
-    canvas.drawArc(
-      Rect.fromCenter(center: Offset(bx + bw * 0.62, by + bh * 0.4), width: bw * 0.4, height: bh * 0.45),
-      math.pi * 1.3, math.pi * 0.9, false, foldPaint,
-    );
-
-    // ── 2. Neural connection network (left panel → center) ──
-    final neuralNodes = [
-      Offset(cx - 55, cy - 14),
-      Offset(cx - 42, cy + 10),
-      Offset(cx - 28, cy - 6),
-      Offset(cx - 15, cy + 14),
-    ];
-
-    for (int i = 0; i < neuralNodes.length - 1; i++) {
-      canvas.drawLine(neuralNodes[i], neuralNodes[i + 1], glowLinePaint);
-      canvas.drawLine(neuralNodes[i], neuralNodes[i + 1], linePaint);
-    }
-    // Extra cross connections
-    if (neuralNodes.length > 2) {
-      canvas.drawLine(neuralNodes[0], neuralNodes[2], linePaint..color = const Color(0xFF00B4D8).withOpacity(0.25));
+    // — 2. Full-body ambient glow (wide blurred fill path) —
+    void drawBodySegment(Path path, {double glowSigma = 8, double fillAlpha = 0.18}) {
+      canvas.drawPath(path, glowFill(cyan.withValues(alpha: fillAlpha), glowSigma));
+      canvas.drawPath(path, glowStroke(cyanBright, 4, 4));
+      canvas.drawPath(path, crispStroke(cyan, 1.2));
     }
 
-    for (final n in neuralNodes) {
-      canvas.drawCircle(n, 2.2, nodePaint..color = const Color(0xFF00D4F0));
-      canvas.drawCircle(n, 4,
-        Paint()
-          ..color = const Color(0xFF00E5FF).withOpacity(0.2)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
-          ..style = PaintingStyle.fill);
-    }
-
-    // ── 3. Center AI badge ──
-    final aiCenter = Offset(cx, cy);
-    final aiSize = 28.0;
-    final aiRect = Rect.fromCenter(center: aiCenter, width: aiSize * 2, height: aiSize * 2);
-
-    // Outer ambient glow
-    canvas.drawRect(aiRect.inflate(8), centerGlowPaint);
-
-    // Rounded square badge
-    final aiRRect = RRect.fromRectAndRadius(aiRect, const Radius.circular(8));
-    canvas.drawRRect(
-      aiRRect,
-      Paint()
-        ..color = const Color(0xFF062040)
-        ..style = PaintingStyle.fill,
-    );
-    canvas.drawRRect(
-      aiRRect,
-      Paint()
-        ..color = const Color(0xFF00E5FF).withOpacity(0.6)
-        ..strokeWidth = 1.2
-        ..style = PaintingStyle.stroke,
-    );
-    // Inner glow on badge
-    canvas.drawRRect(
-      aiRRect.inflate(-2),
-      Paint()
-        ..color = const Color(0xFF0080FF).withOpacity(0.12)
-        ..style = PaintingStyle.fill,
-    );
-
-    // "AI" text in badge
-    final tp = TextPainter(
-      text: const TextSpan(
-        text: 'AI',
-        style: TextStyle(
-          color: Color(0xFF00E5FF),
-          fontSize: 13,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    tp.layout();
-    tp.paint(canvas, Offset(aiCenter.dx - tp.width / 2, aiCenter.dy - tp.height / 2));
-
-    // Pulsing ring around AI badge (animated)
-    final pulseRadius = aiSize + 6 + math.sin(animValue * 2 * math.pi) * 3;
-    canvas.drawCircle(
-      aiCenter, pulseRadius,
-      Paint()
-        ..color = const Color(0xFF00E5FF).withOpacity(0.2 - animValue * 0.1)
-        ..strokeWidth = 1
-        ..style = PaintingStyle.stroke,
-    );
-
-    // ── 4. Connection lines right side (center → walking figure) ──
-    final rightNodes = [
-      Offset(cx + 18, cy - 10),
-      Offset(cx + 32, cy + 12),
-      Offset(cx + 48, cy - 4),
-      Offset(cx + 60, cy + 8),
-    ];
-
-    final rLinePaint = Paint()
-      ..color = const Color(0xFF00B4D8).withOpacity(0.55)
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
-    final rGlowPaint = Paint()
-      ..color = const Color(0xFF00E5FF).withOpacity(0.15)
-      ..strokeWidth = 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
-      ..style = PaintingStyle.stroke;
-
-    for (int i = 0; i < rightNodes.length - 1; i++) {
-      canvas.drawLine(rightNodes[i], rightNodes[i + 1], rGlowPaint);
-      canvas.drawLine(rightNodes[i], rightNodes[i + 1], rLinePaint);
-    }
-    for (final n in rightNodes) {
-      canvas.drawCircle(n, 2.0,
-        Paint()..color = const Color(0xFF00D4F0)..style = PaintingStyle.fill);
-    }
-
-    // ── 5. Walking human silhouette (right of composition) ──
-    final figX = cx + 90.0;
-    final figGlowPaint = Paint()
-      ..color = const Color(0xFF00B4D8).withOpacity(0.5)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8;
-    final figLinePaint = Paint()
-      ..color = const Color(0xFF00D4F0).withOpacity(0.85)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2;
-
+    // — 3. Walking pose keypoints —
     // Head
-    canvas.drawCircle(Offset(figX, cy - 20), 6,
-      Paint()..color = const Color(0xFF00D4F0).withOpacity(0.0)..style = PaintingStyle.fill);
-    canvas.drawCircle(Offset(figX, cy - 20), 6, figGlowPaint);
-    canvas.drawCircle(Offset(figX, cy - 20), 6, figLinePaint);
+    final headCenter = Offset(cx + scale * 0.02, y(0.04) + headR);
 
-    // Torso
-    canvas.drawLine(Offset(figX, cy - 14), Offset(figX, cy + 4), figGlowPaint);
-    canvas.drawLine(Offset(figX, cy - 14), Offset(figX, cy + 4), figLinePaint);
+    // Neck
+    final neckTop    = Offset(cx, headCenter.dy + headR * 0.85);
+    final neckBot    = Offset(cx - scale * 0.01, neckTop.dy + scale * 0.045);
 
-    // Arms (walking pose — one forward, one back)
-    canvas.drawLine(Offset(figX, cy - 8), Offset(figX - 8, cy + 4), figGlowPaint);
-    canvas.drawLine(Offset(figX, cy - 8), Offset(figX - 8, cy + 4), figLinePaint);
-    canvas.drawLine(Offset(figX, cy - 8), Offset(figX + 8, cy - 2), figGlowPaint);
-    canvas.drawLine(Offset(figX, cy - 8), Offset(figX + 8, cy - 2), figLinePaint);
+    // Shoulders
+    final shoulderL  = Offset(cx - shouldW * 0.5, neckBot.dy + scale * 0.01);
+    final shoulderR  = Offset(cx + shouldW * 0.5, neckBot.dy + scale * 0.01);
 
-    // Legs (walking pose)
-    canvas.drawLine(Offset(figX, cy + 4), Offset(figX - 7, cy + 18), figGlowPaint);
-    canvas.drawLine(Offset(figX, cy + 4), Offset(figX - 7, cy + 18), figLinePaint);
-    canvas.drawLine(Offset(figX, cy + 4), Offset(figX + 6, cy + 18), figGlowPaint);
-    canvas.drawLine(Offset(figX, cy + 4), Offset(figX + 6, cy + 18), figLinePaint);
+    final torsoBot = Offset(cx, shoulderL.dy + scale * 0.26);
 
-    // Lower legs
-    canvas.drawLine(Offset(figX - 7, cy + 18), Offset(figX - 5, cy + 30), figGlowPaint);
-    canvas.drawLine(Offset(figX - 7, cy + 18), Offset(figX - 5, cy + 30), figLinePaint);
-    canvas.drawLine(Offset(figX + 6, cy + 18), Offset(figX + 10, cy + 28), figGlowPaint);
-    canvas.drawLine(Offset(figX + 6, cy + 18), Offset(figX + 10, cy + 28), figLinePaint);
+    // Pelvis
+    final hipL       = Offset(cx - pelvisW * 0.5, torsoBot.dy + scale * 0.06);
+    final hipR       = Offset(cx + pelvisW * 0.5, torsoBot.dy + scale * 0.06);
+
+    // — RIGHT ARM (forward — raised, elbow bent up) —
+    final rElbow     = Offset(shoulderR.dx + scale * 0.10, shoulderR.dy + scale * 0.11);
+    final rWrist     = Offset(rElbow.dx + scale * 0.04, rElbow.dy - scale * 0.10);
+    final rHand      = Offset(rWrist.dx + scale * 0.01, rWrist.dy - scale * 0.03);
+
+    // — LEFT ARM (back — hanging down, elbow slightly bent) —
+    final lElbow     = Offset(shoulderL.dx - scale * 0.09, shoulderL.dy + scale * 0.14);
+    final lWrist     = Offset(lElbow.dx - scale * 0.03, lElbow.dy + scale * 0.12);
+    final lHand      = Offset(lWrist.dx, lWrist.dy + scale * 0.03);
+
+    // — LEFT LEG (forward stride — knee lifted) —
+    final lKnee      = Offset(hipL.dx - scale * 0.06, hipL.dy + scale * 0.18);
+    final lAnkle     = Offset(lKnee.dx + scale * 0.04, lKnee.dy + scale * 0.20);
+    final lToe       = Offset(lAnkle.dx + scale * 0.07, lAnkle.dy + scale * 0.015);
+
+    // â”€â”€ RIGHT LEG (back stride â€” extended behind) â”€â”€
+    final rKnee      = Offset(hipR.dx + scale * 0.03, hipR.dy + scale * 0.19);
+    final rAnkle     = Offset(rKnee.dx + scale * 0.01, rKnee.dy + scale * 0.19);
+    final rToe       = Offset(rAnkle.dx - scale * 0.05, rAnkle.dy + scale * 0.01);
+
+    // â”€â”€ Draw body fill paths â”€â”€
+
+    // Torso outline (trapezoid)
+    final torsoPath = Path()
+      ..moveTo(shoulderL.dx, shoulderL.dy)
+      ..lineTo(shoulderR.dx, shoulderR.dy)
+      ..cubicTo(shoulderR.dx + scale*0.04, torsoBot.dy - scale*0.06,
+                torsoBot.dx + pelvisW*0.4, torsoBot.dy,
+                torsoBot.dx + pelvisW*0.35, torsoBot.dy)
+      ..lineTo(torsoBot.dx - pelvisW*0.35, torsoBot.dy)
+      ..cubicTo(torsoBot.dx - pelvisW*0.4, torsoBot.dy,
+                shoulderL.dx - scale*0.04, torsoBot.dy - scale*0.06,
+                shoulderL.dx, shoulderL.dy)
+      ..close();
+    _drawBodySegment(torsoPath, glowSigma: 6, fillAlpha: 0.14);
+
+    // Pelvis/hips
+    final pelvisPath = Path()
+      ..moveTo(torsoBot.dx - pelvisW*0.35, torsoBot.dy)
+      ..lineTo(torsoBot.dx + pelvisW*0.35, torsoBot.dy)
+      ..lineTo(hipR.dx, hipR.dy)
+      ..lineTo(hipL.dx, hipL.dy)
+      ..close();
+    _drawBodySegment(pelvisPath, glowSigma: 5, fillAlpha: 0.12);
+
+    // â”€â”€ Neck â”€â”€
+    canvas.drawLine(neckTop, neckBot, glowStroke(cyan, 5, 4));
+    canvas.drawLine(neckTop, neckBot, crispStroke(cyan, 2.0));
+
+    // â”€â”€ Shoulders across â”€â”€
+    canvas.drawLine(shoulderL, shoulderR, glowStroke(cyan, 4, 3));
+    canvas.drawLine(shoulderL, shoulderR, crispStroke(cyan, 1.5));
+
+    // â”€â”€ Spine line â”€â”€
+    canvas.drawLine(neckBot, torsoBot, glowStroke(cyanDim.withOpacity(0.4), 3, 4));
+    canvas.drawLine(neckBot, torsoBot, crispStroke(cyanDim.withOpacity(0.6), 0.8));
+
+    // â”€â”€ RIGHT ARM â”€â”€
+    canvas.drawLine(shoulderR, rElbow, glowStroke(cyan, 5, 4));
+    canvas.drawLine(shoulderR, rElbow, crispStroke(cyan, 1.8));
+    canvas.drawLine(rElbow, rWrist, glowStroke(cyan, 4, 3));
+    canvas.drawLine(rElbow, rWrist, crispStroke(cyan, 1.5));
+    canvas.drawCircle(rHand, handR * scale, glowFill(cyan.withOpacity(0.4), 4));
+    canvas.drawCircle(rHand, handR * scale, crispStroke(cyan, 1.2));
+
+    // â”€â”€ LEFT ARM â”€â”€
+    canvas.drawLine(shoulderL, lElbow, glowStroke(cyan, 5, 4));
+    canvas.drawLine(shoulderL, lElbow, crispStroke(cyan, 1.8));
+    canvas.drawLine(lElbow, lWrist, glowStroke(cyan, 4, 3));
+    canvas.drawLine(lElbow, lWrist, crispStroke(cyan, 1.5));
+    canvas.drawCircle(lHand, handR * scale, glowFill(cyan.withOpacity(0.4), 4));
+    canvas.drawCircle(lHand, handR * scale, crispStroke(cyan, 1.2));
+
+    // â”€â”€ LEFT LEG â”€â”€
+    canvas.drawLine(hipL, lKnee, glowStroke(cyan, 6, 5));
+    canvas.drawLine(hipL, lKnee, crispStroke(cyan, 2.0));
+    canvas.drawLine(lKnee, lAnkle, glowStroke(cyan, 5, 4));
+    canvas.drawLine(lKnee, lAnkle, crispStroke(cyan, 1.8));
+    canvas.drawLine(lAnkle, lToe, glowStroke(cyan, 4, 3));
+    canvas.drawLine(lAnkle, lToe, crispStroke(cyan, 1.5));
+
+    // â”€â”€ RIGHT LEG â”€â”€
+    canvas.drawLine(hipR, rKnee, glowStroke(cyan, 6, 5));
+    canvas.drawLine(hipR, rKnee, crispStroke(cyan, 2.0));
+    canvas.drawLine(rKnee, rAnkle, glowStroke(cyan, 5, 4));
+    canvas.drawLine(rKnee, rAnkle, crispStroke(cyan, 1.8));
+    canvas.drawLine(rAnkle, rToe, glowStroke(cyan, 4, 3));
+    canvas.drawLine(rAnkle, rToe, crispStroke(cyan, 1.5));
+
+    // â”€â”€ Joint dots â”€â”€
+    for (final joint in [
+      shoulderL, shoulderR, rElbow, lElbow, hipL, hipR,
+      lKnee, rKnee, lAnkle, rAnkle,
+    ]) {
+      canvas.drawCircle(joint, scale * 0.018,
+        glowFill(cyanBright.withOpacity(0.35), 5));
+      canvas.drawCircle(joint, scale * 0.012,
+        Paint()..color = cyanBright..style = PaintingStyle.fill);
+    }
+
+    // â”€â”€ HEAD (drawn last so it's on top) â”€â”€
+    // Outer glow
+    canvas.drawCircle(headCenter, headR * 1.6,
+      glowFill(cyan.withOpacity(0.15), 10));
+    // Fill
+    canvas.drawCircle(headCenter, headR,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [cyanBright.withOpacity(0.3), cyan.withOpacity(0.1)],
+        ).createShader(Rect.fromCircle(center: headCenter, radius: headR))
+        ..style = PaintingStyle.fill);
+    // Glow stroke
+    canvas.drawCircle(headCenter, headR, glowStroke(cyanBright, 4, 5));
+    // Crisp stroke
+    canvas.drawCircle(headCenter, headR, crispStroke(cyan, 1.5));
+
+    // â”€â”€ Animated pulse aura around whole figure â”€â”€
+    final pulseOpacity = 0.07 + math.sin(animValue * 2 * math.pi) * 0.04;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(cx, (headCenter.dy + rToe.dy) / 2),
+        width: scale * 0.55,
+        height: (rToe.dy - headCenter.dy) * 1.1,
+      ),
+      Paint()
+        ..color = cyan.withOpacity(pulseOpacity)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 16)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 10,
+    );
   }
 
   @override
   bool shouldRepaint(covariant _AiHolographicPainter old) => old.animValue != animValue;
 }
 
-// ── PREMIUM REUSABLE WIDGETS ─────────────────────────────────────────────────
+
+// â”€â”€ PREMIUM REUSABLE WIDGETS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /// A circular progress ring with optional glow shadow and a centered child widget.
 class _GlowRing extends StatelessWidget {
   final double size;
-  final double value;      // 0.0 – 1.0
+  final double value;      // 0.0 â€“ 1.0
   final Color ringColor;
   final double strokeWidth;
   final Widget child;
@@ -2108,14 +2103,14 @@ class _GlowRing extends StatelessWidget {
 }
 
 /// Premium metric row matching the reference image:
-/// bold white label → large purple Orbitron value → grey sublabel | neon ring w/ number
+/// bold white label â†’ large purple Orbitron value â†’ grey sublabel | neon ring w/ number
 class _PremiumMetricRow extends StatelessWidget {
   final String label;
   final String subLabel;
   final double value;
   final String displaySuffix;
   final Color ringColor;
-  final double ringValue;   // 0.0 – 1.0
+  final double ringValue;   // 0.0 â€“ 1.0
   final String ringLabel;
 
   const _PremiumMetricRow({
@@ -2191,9 +2186,9 @@ class _PremiumMetricRow extends StatelessWidget {
   }
 }
 
-// ── CUSTOM PAINTERS ───────────────────────────────────────────────────────────
+// â”€â”€ CUSTOM PAINTERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// 2. Premium foot outline — gradient fill + glow border + bright pressure hotspots
+// 2. Premium foot outline â€” gradient fill + glow border + bright pressure hotspots
 class _FootSilhouettePainter extends CustomPainter {
 
   final bool isLeft;
@@ -2213,14 +2208,14 @@ class _FootSilhouettePainter extends CustomPainter {
 
     final path = _buildFootPath(w, h);
 
-    // ── 1. Outer ambient glow (large soft shadow around foot shape) ──
+    // â”€â”€ 1. Outer ambient glow (large soft shadow around foot shape) â”€â”€
     final glowPaint = Paint()
       ..color = accentColor.withOpacity(0.12)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18)
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, glowPaint);
 
-    // ── 2. Gradient fill inside foot ──
+    // â”€â”€ 2. Gradient fill inside foot â”€â”€
     final rect = Rect.fromLTWH(0, 0, w, h);
     final fillPaint = Paint()
       ..shader = LinearGradient(
@@ -2235,7 +2230,7 @@ class _FootSilhouettePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, fillPaint);
 
-    // ── 3. Glowing outline ──
+    // â”€â”€ 3. Glowing outline â”€â”€
     final outlineGlowPaint = Paint()
       ..color = accentColor.withOpacity(0.5)
       ..style = PaintingStyle.stroke
@@ -2249,11 +2244,11 @@ class _FootSilhouettePainter extends CustomPainter {
       ..strokeWidth = 1.5;
     canvas.drawPath(path, outlinePaint);
 
-    // ── 4. Pulse ring at midfoot ──
+    // â”€â”€ 4. Pulse ring at midfoot â”€â”€
     final midCenter = Offset(w * 0.5, h * 0.62);
     _drawPulseRing(canvas, midCenter, w * 0.38, accentColor);
 
-    // ── 5. Pressure hotspots ──
+    // â”€â”€ 5. Pressure hotspots â”€â”€
     final zones = pressure.normalized;
     final heelCenter     = Offset(w * 0.50, h * 0.82);
     final midfootCenter  = isLeft ? Offset(w * 0.44, h * 0.56) : Offset(w * 0.56, h * 0.56);
@@ -2564,7 +2559,7 @@ class _TimelineChartPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// ── Shared Bottom Navigation widget ─────────────────────────────────────────
+// â”€â”€ Shared Bottom Navigation widget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _BottomNav extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;
