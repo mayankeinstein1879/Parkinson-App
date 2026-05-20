@@ -75,7 +75,7 @@ class DeviceStatusScreen extends StatelessWidget {
                     label: AppStrings.btnDisconnect,
                     icon: Icons.bluetooth_disabled,
                     isDestructive: true,
-                    onPressed: ble.isConnected
+                    onPressed: (ble.isConnected || ble.hasAnyDeviceConnected)
                         ? () => ble.disconnect()
                         : null,
                   ),

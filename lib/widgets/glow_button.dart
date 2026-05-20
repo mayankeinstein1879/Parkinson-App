@@ -33,10 +33,14 @@ class GlowButton extends StatelessWidget {
             end: Alignment.bottomRight,
           );
 
-    return GestureDetector(
-      onTap: isLoading ? null : onPressed,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+    return MouseRegion(
+      cursor: onPressed != null && !isLoading
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
+      child: GestureDetector(
+        onTap: isLoading ? null : onPressed,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         decoration: BoxDecoration(
           gradient: onPressed != null && !isLoading ? gradient : null,

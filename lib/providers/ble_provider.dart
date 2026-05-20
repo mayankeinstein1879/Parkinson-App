@@ -71,6 +71,8 @@ class BleProvider extends ChangeNotifier {
       } else if (status == ConnectionStatus.error) {
         _setError('Connection failed. Please retry.');
       } else if (status == ConnectionStatus.disconnected) {
+        _connectedDeviceLeft  = null;
+        _connectedDeviceRight = null;
         _clearError();
       }
 
@@ -123,11 +125,16 @@ class BleProvider extends ChangeNotifier {
   }
 
   Future<void> disconnect() async {
-    await _bleManager.disconnect();
-    _connectedDeviceLeft  = null;
-    _connectedDeviceRight = null;
-    _connectionStatus     = ConnectionStatus.disconnected;
-    notifyListeners();
+    try {
+      await _bleManager.disconnect();
+    } catch (e) {
+      AppLogger.error('Failed to disconnect cleanly', e, null);
+    } finally {
+      _connectedDeviceLeft  = null;
+      _connectedDeviceRight = null;
+      _connectionStatus     = ConnectionStatus.disconnected;
+      notifyListeners();
+    }
   }
 
   // ── Auto-Reconnect ────────────────────────────────────────────────────────
