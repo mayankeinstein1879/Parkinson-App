@@ -43,7 +43,7 @@ void main() async {
   //
   // This is controlled at runtime via SettingsProvider.useMockData.
   // For a quick manual override, set useMock = false below.
-  const bool useMock = true; // ← Set to false when testing with real ESP32
+  const bool useMock = false; // ← false = real ESP32 BLE | true = mock/simulated
 
   final bleManager = useMock ? MockBleService() : Esp32BleManager();
   await bleManager.initialize();

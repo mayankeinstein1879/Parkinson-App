@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:parkinson_insole_app/constants/ble_constants.dart';
 import 'package:parkinson_insole_app/models/insole_device.dart';
@@ -155,6 +156,10 @@ class BleConnection {
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   Future<void> _requestMtu(BluetoothDevice device) async {
+    if (kIsWeb) {
+      AppLogger.ble('Web — skipping MTU negotiation (not supported on web)');
+      return;
+    }
     try {
       await device.requestMtu(BleConstants.mtuSize);
       AppLogger.ble('MTU negotiated: ${BleConstants.mtuSize}');

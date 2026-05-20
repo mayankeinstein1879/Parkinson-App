@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:parkinson_insole_app/constants/ble_constants.dart';
 import 'package:parkinson_insole_app/models/cue_settings.dart';
@@ -81,14 +82,17 @@ class Esp32BleManager implements BleManager {
   Future<void> initialize() async {
     AppLogger.ble('Esp32BleManager initialising');
 
-    // Watch the Bluetooth adaptor state
-    FlutterBluePlus.adapterState.listen((state) {
-      AppLogger.ble('BT Adapter state → $state');
-      if (state == BluetoothAdapterState.off) {
-        // Adapter turned off mid-session
-        _telemetryController.add([]); // flush
-      }
-    });
+    // Watch the Bluetooth adaptor state (Android/desktop only)
+    if (!kIsWeb) {
+      FlutterBluePlus.adapterState.listen((state) {
+        AppLogger.ble('BT Adapter state → $state');
+        if (state == BluetoothAdapterState.off) {
+          _telemetryController.add([]);
+        }
+      });
+    } else {
+      AppLogger.ble('Web — skipping adapterState listener (browser manages BT)');
+    }
 
     // When connection state changes, react accordingly
     _connStatusSub = _connection.statusStream.listen(_onConnectionStatus);
