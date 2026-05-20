@@ -642,7 +642,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // Desktop Individual Insole Card
+  // Desktop Individual Insole Card — matches UI image exactly
   Widget _buildDesktopInsoleCard(
     BuildContext context,
     bool isLeft,
@@ -650,71 +650,124 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     TelemetryData telemetry,
   ) {
     final color = isLeft ? AppColors.leftInsole : AppColors.rightInsole;
+    final glowColor = isLeft ? AppColors.glowCyan : AppColors.glowPurple;
     final name = isLeft ? 'Left Insole' : 'Right Insole';
-
     final isConnected = device != null;
+
+    final gaitStability  = isConnected ? telemetry.gaitStability  : 0.0;
+    final fogRisk        = isConnected ? telemetry.fogRisk        : 0.0;
+    final stepCadence    = isConnected ? telemetry.stepCadence    : 0.0;
+    final battery        = isConnected ? telemetry.batteryLevel   : 0;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF0A1628),
+            Color.lerp(const Color(0xFF0A1628), color, 0.06)!,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
+        border: Border.all(color: color.withOpacity(0.25), width: 1.2),
+        boxShadow: [
+          BoxShadow(color: glowColor, blurRadius: 18, spreadRadius: 1),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header
-          Row(
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.orbitron(
-                  color: isConnected ? color : AppColors.textSecondary,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
-                ),
-              ),
-              const Spacer(),
-              Icon(
-                isConnected ? Icons.bluetooth : Icons.bluetooth_disabled,
-                color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
-                size: 12,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                isConnected ? 'Connected' : 'Disconnected',
-                style: TextStyle(
-                  color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                isConnected ? Icons.battery_4_bar_rounded : Icons.battery_0_bar_rounded,
-                color: isConnected ? color : AppColors.textSecondary,
-                size: 14,
-              ),
-              Text(
-                isConnected ? '${telemetry.batteryLevel}%' : '0%',
-                style: TextStyle(
-                  color: isConnected ? color : AppColors.textSecondary,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Foot visualization & Telemetry parameters
+          // ── Row 1: Name | BLE status + battery circle ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Custom foot painter widget
+              // Insole name
+              Text(
+                name,
+                style: GoogleFonts.orbitron(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                ),
+              ),
+              const Spacer(),
+              // BLE + Connected status
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.bluetooth, color: AppColors.primaryCyan, size: 13),
+                      const SizedBox(width: 3),
+                      Text(
+                        'BLE',
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.primaryCyan,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Circular battery gauge
+                      SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              value: isConnected ? battery / 100.0 : 0.0,
+                              strokeWidth: 3,
+                              backgroundColor: AppColors.surface,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                isConnected ? AppColors.accentGreen : AppColors.textDisabled,
+                              ),
+                            ),
+                            Icon(
+                              Icons.battery_charging_full,
+                              color: isConnected ? AppColors.accentGreen : AppColors.textDisabled,
+                              size: 11,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                        color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                        size: 11,
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        isConnected ? 'Connected' : 'Disconnected',
+                        style: TextStyle(
+                          color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
+          // ── Row 2: Foot silhouette | Metrics ──
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Glowing foot silhouette
               SizedBox(
-                width: 90,
-                height: 160,
+                width: 95,
+                height: 190,
                 child: CustomPaint(
                   painter: _FootSilhouettePainter(
                     isLeft: isLeft,
@@ -723,18 +776,41 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
 
-              // Telemetry values columns
+              // Metrics column
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTelemetryProgressRow('Gait Stability', telemetry.gaitStability, '%', AppColors.accentGreen, isConnected ? 0.7 : 0.0),
-                    const SizedBox(height: 12),
-                    _buildTelemetryProgressRow('FOG Risk', telemetry.fogRisk, '%', AppColors.warningOrange, isConnected ? 0.1 : 0.0),
-                    const SizedBox(height: 12),
-                    _buildTelemetryProgressRow('Step Cadence', telemetry.stepCadence, '', color, isConnected ? 0.8 : 0.0),
+                    _buildImageStyleMetricRow(
+                      label: 'Gait Stability',
+                      subLabel: 'Score (%)',
+                      value: gaitStability,
+                      displaySuffix: '%',
+                      ringColor: AppColors.accentGreen,
+                      ringValue: isConnected ? gaitStability / 100.0 : 0.0,
+                      ringLabel: '${gaitStability.toStringAsFixed(0)}',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildImageStyleMetricRow(
+                      label: 'FOG Risk',
+                      subLabel: 'Percentage',
+                      value: fogRisk,
+                      displaySuffix: '%',
+                      ringColor: AppColors.warningOrange,
+                      ringValue: isConnected ? fogRisk / 100.0 : 0.0,
+                      ringLabel: '${fogRisk.toStringAsFixed(0)}',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildImageStyleMetricRow(
+                      label: 'Step Cadence',
+                      subLabel: '(steps/min)',
+                      value: stepCadence,
+                      displaySuffix: '',
+                      ringColor: color,
+                      ringValue: isConnected ? (stepCadence / 200.0).clamp(0.0, 1.0) : 0.0,
+                      ringLabel: '${stepCadence.toStringAsFixed(0)}',
+                    ),
                   ],
                 ),
               ),
@@ -742,13 +818,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ),
           const SizedBox(height: 12),
 
-          // Bottom live ECG wave
+          // ── Row 3: ECG heartbeat wave ──
           SizedBox(
-            height: 24,
+            height: 28,
             child: CustomPaint(
               painter: _LiveWavePainter(
                 animValue: _waveController.value,
-                lineColor: isConnected ? color : AppColors.textSecondary.withOpacity(0.3),
+                lineColor: isConnected ? color.withOpacity(0.9) : AppColors.textSecondary.withOpacity(0.2),
                 isFlat: !isConnected,
               ),
             ),
@@ -758,49 +834,78 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  Widget _buildTelemetryProgressRow(String label, double value, String unit, Color tint, double progressRatio) {
+  /// Builds a single metric row matching the image style:
+  /// [Label bold white] [large colored value] | [circular ring with % inside]
+  Widget _buildImageStyleMetricRow({
+    required String label,
+    required String subLabel,
+    required double value,
+    required String displaySuffix,
+    required Color ringColor,
+    required double ringValue,
+    required String ringLabel,
+  }) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
+                ),
+              ),
+              const SizedBox(height: 2),
               Row(
-                textBaseline: TextBaseline.alphabetic,
                 crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    value.toStringAsFixed(1),
+                    value.toStringAsFixed(1) + displaySuffix,
                     style: GoogleFonts.orbitron(
-                      color: AppColors.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      color: AppColors.secondaryPurple,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(width: 2),
-                  Text(unit, style: const TextStyle(color: AppColors.textSecondary, fontSize: 8)),
                 ],
+              ),
+              Text(
+                subLabel,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 9,
+                ),
               ),
             ],
           ),
         ),
-        // Visual circular progress ring
+        const SizedBox(width: 8),
+        // Circular ring with number inside
         SizedBox(
-          width: 32,
-          height: 32,
+          width: 44,
+          height: 44,
           child: Stack(
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: progressRatio,
-                strokeWidth: 3,
+                value: ringValue,
+                strokeWidth: 4,
                 backgroundColor: AppColors.surface,
-                valueColor: AlwaysStoppedAnimation<Color>(tint),
+                valueColor: AlwaysStoppedAnimation<Color>(ringColor),
               ),
               Text(
-                '${(progressRatio * 100).toInt()}',
-                style: const TextStyle(fontSize: 8, color: AppColors.textSecondary),
+                ringLabel,
+                style: TextStyle(
+                  color: ringColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
