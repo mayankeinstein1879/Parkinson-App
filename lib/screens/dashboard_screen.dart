@@ -642,7 +642,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  // Desktop Individual Insole Card — matches UI image exactly
+  // Desktop Individual Insole Card — premium pixel-faithful to reference image
   Widget _buildDesktopInsoleCard(
     BuildContext context,
     bool isLeft,
@@ -650,54 +650,62 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     TelemetryData telemetry,
   ) {
     final color = isLeft ? AppColors.leftInsole : AppColors.rightInsole;
-    final glowColor = isLeft ? AppColors.glowCyan : AppColors.glowPurple;
+    final glowColor = isLeft
+        ? const Color(0xFF00E5FF).withOpacity(0.18)
+        : const Color(0xFF7B2FFF).withOpacity(0.18);
+    final borderGlow = isLeft
+        ? const Color(0xFF00E5FF).withOpacity(0.45)
+        : const Color(0xFF7B2FFF).withOpacity(0.45);
     final name = isLeft ? 'Left Insole' : 'Right Insole';
     final isConnected = device != null;
 
-    final gaitStability  = isConnected ? telemetry.gaitStability  : 0.0;
-    final fogRisk        = isConnected ? telemetry.fogRisk        : 0.0;
-    final stepCadence    = isConnected ? telemetry.stepCadence    : 0.0;
-    final battery        = isConnected ? telemetry.batteryLevel   : 0;
+    final gaitStability = isConnected ? telemetry.gaitStability : 0.0;
+    final fogRisk       = isConnected ? telemetry.fogRisk       : 0.0;
+    final stepCadence   = isConnected ? telemetry.stepCadence   : 0.0;
+    final battery       = isConnected ? telemetry.batteryLevel  : 0;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF0A1628),
-            Color.lerp(const Color(0xFF0A1628), color, 0.06)!,
+            const Color(0xFF071526),
+            const Color(0xFF0C1F3A),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.25), width: 1.2),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: borderGlow, width: 1.5),
         boxShadow: [
-          BoxShadow(color: glowColor, blurRadius: 18, spreadRadius: 1),
+          BoxShadow(color: glowColor, blurRadius: 24, spreadRadius: 2, offset: Offset.zero),
+          BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 12, spreadRadius: -2),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Row 1: Name | BLE status + battery circle ──
+          // ── Header: Name | BLE badge + battery ring ──
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Insole name
               Text(
                 name,
                 style: GoogleFonts.orbitron(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
-                  fontSize: 14,
+                  fontSize: 15,
+                  letterSpacing: 0.5,
                 ),
               ),
               const Spacer(),
-              // BLE + Connected status
+              // BLE label
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.bluetooth, color: AppColors.primaryCyan, size: 13),
                       const SizedBox(width: 3),
@@ -707,30 +715,20 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                           color: AppColors.primaryCyan,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
                         ),
                       ),
                       const SizedBox(width: 8),
                       // Circular battery gauge
-                      SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              value: isConnected ? battery / 100.0 : 0.0,
-                              strokeWidth: 3,
-                              backgroundColor: AppColors.surface,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                isConnected ? AppColors.accentGreen : AppColors.textDisabled,
-                              ),
-                            ),
-                            Icon(
-                              Icons.battery_charging_full,
-                              color: isConnected ? AppColors.accentGreen : AppColors.textDisabled,
-                              size: 11,
-                            ),
-                          ],
+                      _GlowRing(
+                        size: 34,
+                        value: isConnected ? battery / 100.0 : 0.0,
+                        ringColor: AppColors.accentGreen,
+                        strokeWidth: 3.0,
+                        child: Icon(
+                          Icons.battery_charging_full,
+                          color: isConnected ? AppColors.accentGreen : AppColors.textDisabled,
+                          size: 12,
                         ),
                       ),
                     ],
@@ -749,7 +747,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         style: TextStyle(
                           color: isConnected ? AppColors.accentGreen : AppColors.alertRed,
                           fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -758,73 +756,77 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ),
             ],
           ),
-          const SizedBox(height: 14),
-
-          // ── Row 2: Foot silhouette | Metrics ──
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Glowing foot silhouette
-              SizedBox(
-                width: 95,
-                height: 190,
-                child: CustomPaint(
-                  painter: _FootSilhouettePainter(
-                    isLeft: isLeft,
-                    pressure: telemetry.pressure,
-                    accentColor: color,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-
-              // Metrics column
-              Expanded(
-                child: Column(
-                  children: [
-                    _buildImageStyleMetricRow(
-                      label: 'Gait Stability',
-                      subLabel: 'Score (%)',
-                      value: gaitStability,
-                      displaySuffix: '%',
-                      ringColor: AppColors.accentGreen,
-                      ringValue: isConnected ? gaitStability / 100.0 : 0.0,
-                      ringLabel: '${gaitStability.toStringAsFixed(0)}',
-                    ),
-                    const SizedBox(height: 10),
-                    _buildImageStyleMetricRow(
-                      label: 'FOG Risk',
-                      subLabel: 'Percentage',
-                      value: fogRisk,
-                      displaySuffix: '%',
-                      ringColor: AppColors.warningOrange,
-                      ringValue: isConnected ? fogRisk / 100.0 : 0.0,
-                      ringLabel: '${fogRisk.toStringAsFixed(0)}',
-                    ),
-                    const SizedBox(height: 10),
-                    _buildImageStyleMetricRow(
-                      label: 'Step Cadence',
-                      subLabel: '(steps/min)',
-                      value: stepCadence,
-                      displaySuffix: '',
-                      ringColor: color,
-                      ringValue: isConnected ? (stepCadence / 200.0).clamp(0.0, 1.0) : 0.0,
-                      ringLabel: '${stepCadence.toStringAsFixed(0)}',
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 12),
 
-          // ── Row 3: ECG heartbeat wave ──
+          // ── Body: Foot + Metrics ──
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Glowing foot silhouette
+                SizedBox(
+                  width: 88,
+                  child: CustomPaint(
+                    painter: _FootSilhouettePainter(
+                      isLeft: isLeft,
+                      pressure: telemetry.pressure,
+                      accentColor: color,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                // Metrics column
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _PremiumMetricRow(
+                        label: 'Gait Stability',
+                        subLabel: 'Score (%)',
+                        value: gaitStability,
+                        displaySuffix: '',
+                        ringColor: AppColors.accentGreen,
+                        ringValue: isConnected ? gaitStability / 100.0 : 0.0,
+                        ringLabel: gaitStability.toStringAsFixed(0),
+                      ),
+                      const SizedBox(height: 8),
+                      _PremiumMetricRow(
+                        label: 'FOG Risk',
+                        subLabel: 'Percentage',
+                        value: fogRisk,
+                        displaySuffix: '%',
+                        ringColor: AppColors.warningOrange,
+                        ringValue: isConnected ? fogRisk / 100.0 : 0.0,
+                        ringLabel: fogRisk.toStringAsFixed(0),
+                      ),
+                      const SizedBox(height: 8),
+                      _PremiumMetricRow(
+                        label: 'Step Cadence',
+                        subLabel: '(steps/min)',
+                        value: stepCadence,
+                        displaySuffix: '',
+                        ringColor: color,
+                        ringValue: isConnected ? (stepCadence / 200.0).clamp(0.0, 1.0) : 0.0,
+                        ringLabel: stepCadence.toStringAsFixed(0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // ── ECG heartbeat wave ──
           SizedBox(
-            height: 28,
+            height: 30,
             child: CustomPaint(
               painter: _LiveWavePainter(
                 animValue: _waveController.value,
-                lineColor: isConnected ? color.withOpacity(0.9) : AppColors.textSecondary.withOpacity(0.2),
+                lineColor: isConnected ? color : AppColors.textSecondary.withOpacity(0.15),
+                strokeWidth: isConnected ? 1.8 : 1.0,
+                glowColor: isConnected ? color.withOpacity(0.4) : Colors.transparent,
                 isFlat: !isConnected,
               ),
             ),
@@ -834,8 +836,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
-  /// Builds a single metric row matching the image style:
-  /// [Label bold white] [large colored value] | [circular ring with % inside]
   Widget _buildImageStyleMetricRow({
     required String label,
     required String subLabel,
@@ -845,72 +845,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     required double ringValue,
     required String ringLabel,
   }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    value.toStringAsFixed(1) + displaySuffix,
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.secondaryPurple,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                subLabel,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 9,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        // Circular ring with number inside
-        SizedBox(
-          width: 44,
-          height: 44,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CircularProgressIndicator(
-                value: ringValue,
-                strokeWidth: 4,
-                backgroundColor: AppColors.surface,
-                valueColor: AlwaysStoppedAnimation<Color>(ringColor),
-              ),
-              Text(
-                ringLabel,
-                style: TextStyle(
-                  color: ringColor,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return _PremiumMetricRow(
+      label: label,
+      subLabel: subLabel,
+      value: value,
+      displaySuffix: displaySuffix,
+      ringColor: ringColor,
+      ringValue: ringValue,
+      ringLabel: ringLabel,
     );
   }
 
@@ -1768,8 +1710,149 @@ class _AiNetworkPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// 2. High fidelity foot outline with pressure hotspots
+// ── PREMIUM REUSABLE WIDGETS ─────────────────────────────────────────────────
+
+/// A circular progress ring with optional glow shadow and a centered child widget.
+class _GlowRing extends StatelessWidget {
+  final double size;
+  final double value;      // 0.0 – 1.0
+  final Color ringColor;
+  final double strokeWidth;
+  final Widget child;
+
+  const _GlowRing({
+    required this.size,
+    required this.value,
+    required this.ringColor,
+    required this.strokeWidth,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Soft glow behind the ring
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: ringColor.withOpacity(0.3),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+          CircularProgressIndicator(
+            value: value,
+            strokeWidth: strokeWidth,
+            backgroundColor: const Color(0xFF0D1B2E),
+            valueColor: AlwaysStoppedAnimation<Color>(ringColor),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// Premium metric row matching the reference image:
+/// bold white label → large purple Orbitron value → grey sublabel | neon ring w/ number
+class _PremiumMetricRow extends StatelessWidget {
+  final String label;
+  final String subLabel;
+  final double value;
+  final String displaySuffix;
+  final Color ringColor;
+  final double ringValue;   // 0.0 – 1.0
+  final String ringLabel;
+
+  const _PremiumMetricRow({
+    required this.label,
+    required this.subLabel,
+    required this.value,
+    required this.displaySuffix,
+    required this.ringColor,
+    required this.ringValue,
+    required this.ringLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Left: label stack
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  letterSpacing: 0.2,
+                ),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                value.toStringAsFixed(1) + displaySuffix,
+                style: GoogleFonts.orbitron(
+                  color: const Color(0xFF9B6FFF), // vivid purple matching reference
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                ),
+              ),
+              Text(
+                subLabel,
+                style: const TextStyle(
+                  color: Color(0xFF5A7A9A),
+                  fontSize: 9,
+                  letterSpacing: 0.1,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 6),
+        // Right: neon circular ring
+        _GlowRing(
+          size: 48,
+          value: ringValue,
+          ringColor: ringColor,
+          strokeWidth: 3.5,
+          child: Text(
+            ringLabel,
+            style: TextStyle(
+              color: ringColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── CUSTOM PAINTERS ───────────────────────────────────────────────────────────
+
+// 2. Premium foot outline — gradient fill + glow border + bright pressure hotspots
 class _FootSilhouettePainter extends CustomPainter {
+
   final bool isLeft;
   final PressureZone pressure;
   final Color accentColor;
@@ -1785,146 +1868,198 @@ class _FootSilhouettePainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // Draw general foot outline path
-    final outlinePaint = Paint()
-      ..color = accentColor.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+    final path = _buildFootPath(w, h);
 
-    final fillPaint = Paint()
-      ..color = accentColor.withOpacity(0.04)
+    // ── 1. Outer ambient glow (large soft shadow around foot shape) ──
+    final glowPaint = Paint()
+      ..color = accentColor.withOpacity(0.12)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18)
       ..style = PaintingStyle.fill;
+    canvas.drawPath(path, glowPaint);
 
-    final path = Path();
-    if (isLeft) {
-      // Draw left foot outline silhouette
-      path.moveTo(w * 0.5, h * 0.05); // Toes top
-      path.quadraticBezierTo(w * 0.15, h * 0.15, w * 0.25, h * 0.4); // Outer side
-      path.quadraticBezierTo(w * 0.45, h * 0.6, w * 0.4, h * 0.78); // Inner arch
-      path.quadraticBezierTo(w * 0.35, h * 0.95, w * 0.55, h * 0.95); // Heel base
-      path.quadraticBezierTo(w * 0.75, h * 0.9, w * 0.7, h * 0.75); // Inner heel
-      path.quadraticBezierTo(w * 0.6, h * 0.5, w * 0.8, h * 0.3); // Inner ball
-      path.quadraticBezierTo(w * 0.8, h * 0.05, w * 0.5, h * 0.05); // Back to toes
-    } else {
-      // Draw right foot outline silhouette (mirrored)
-      path.moveTo(w * 0.5, h * 0.05);
-      path.quadraticBezierTo(w * 0.85, h * 0.15, w * 0.75, h * 0.4);
-      path.quadraticBezierTo(w * 0.55, h * 0.6, w * 0.6, h * 0.78);
-      path.quadraticBezierTo(w * 0.65, h * 0.95, w * 0.45, h * 0.95);
-      path.quadraticBezierTo(w * 0.25, h * 0.9, w * 0.3, h * 0.75);
-      path.quadraticBezierTo(w * 0.4, h * 0.5, w * 0.2, h * 0.3);
-      path.quadraticBezierTo(w * 0.2, h * 0.05, w * 0.5, h * 0.05);
-    }
-    path.close();
-
+    // ── 2. Gradient fill inside foot ──
+    final rect = Rect.fromLTWH(0, 0, w, h);
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          accentColor.withOpacity(0.22),
+          accentColor.withOpacity(0.06),
+          const Color(0xFF0080FF).withOpacity(0.04),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(rect)
+      ..style = PaintingStyle.fill;
     canvas.drawPath(path, fillPaint);
+
+    // ── 3. Glowing outline ──
+    final outlineGlowPaint = Paint()
+      ..color = accentColor.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawPath(path, outlineGlowPaint);
+
+    final outlinePaint = Paint()
+      ..color = accentColor.withOpacity(0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
     canvas.drawPath(path, outlinePaint);
 
-    // Dynamic Pressure Hotspots
-    final zones = pressure.normalized; // [heel, midfoot, forefoot, toe]
+    // ── 4. Pulse ring at midfoot ──
+    final midCenter = Offset(w * 0.5, h * 0.62);
+    _drawPulseRing(canvas, midCenter, w * 0.38, accentColor);
 
-    final heelCenter = Offset(w * 0.5, h * 0.8);
-    final midfootCenter = isLeft ? Offset(w * 0.45, h * 0.55) : Offset(w * 0.55, h * 0.55);
-    final forefootCenter = isLeft ? Offset(w * 0.42, h * 0.3) : Offset(w * 0.58, h * 0.3);
-    final toeCenter = Offset(w * 0.5, h * 0.13);
+    // ── 5. Pressure hotspots ──
+    final zones = pressure.normalized;
+    final heelCenter     = Offset(w * 0.50, h * 0.82);
+    final midfootCenter  = isLeft ? Offset(w * 0.44, h * 0.56) : Offset(w * 0.56, h * 0.56);
+    final forefootCenter = isLeft ? Offset(w * 0.40, h * 0.30) : Offset(w * 0.60, h * 0.30);
+    final toeCenter      = Offset(w * 0.50, h * 0.11);
 
-    _drawHotspot(canvas, heelCenter, zones[0], AppColors.glowCyan);
-    _drawHotspot(canvas, midfootCenter, zones[1], AppColors.glowGreen);
-    _drawHotspot(canvas, forefootCenter, zones[2], AppColors.glowOrange);
-    _drawHotspot(canvas, toeCenter, zones[3], AppColors.glowRed);
+    _drawHotspot(canvas, heelCenter,     math.max(zones[0], 0.4), accentColor);
+    _drawHotspot(canvas, midfootCenter,  math.max(zones[1], 0.25), accentColor.withOpacity(0.9));
+    _drawHotspot(canvas, forefootCenter, math.max(zones[2], 0.3), accentColor);
+    _drawHotspot(canvas, toeCenter,      math.max(zones[3], 0.2), accentColor.withOpacity(0.8));
   }
 
-  void _drawHotspot(Canvas canvas, Offset center, double intensity, Color baseColor) {
-    if (intensity <= 0.02) return;
+  Path _buildFootPath(double w, double h) {
+    final path = Path();
+    if (isLeft) {
+      path.moveTo(w * 0.52, h * 0.04);
+      path.cubicTo(w * 0.72, h * 0.04, w * 0.82, h * 0.10, w * 0.80, h * 0.26);
+      path.cubicTo(w * 0.78, h * 0.40, w * 0.65, h * 0.45, w * 0.68, h * 0.58);
+      path.cubicTo(w * 0.72, h * 0.72, w * 0.76, h * 0.86, w * 0.60, h * 0.95);
+      path.cubicTo(w * 0.46, h * 1.00, w * 0.30, h * 0.96, w * 0.26, h * 0.86);
+      path.cubicTo(w * 0.22, h * 0.76, w * 0.34, h * 0.62, w * 0.30, h * 0.50);
+      path.cubicTo(w * 0.26, h * 0.38, w * 0.14, h * 0.28, w * 0.18, h * 0.16);
+      path.cubicTo(w * 0.22, h * 0.06, w * 0.36, h * 0.04, w * 0.52, h * 0.04);
+    } else {
+      path.moveTo(w * 0.48, h * 0.04);
+      path.cubicTo(w * 0.28, h * 0.04, w * 0.18, h * 0.10, w * 0.20, h * 0.26);
+      path.cubicTo(w * 0.22, h * 0.40, w * 0.35, h * 0.45, w * 0.32, h * 0.58);
+      path.cubicTo(w * 0.28, h * 0.72, w * 0.24, h * 0.86, w * 0.40, h * 0.95);
+      path.cubicTo(w * 0.54, h * 1.00, w * 0.70, h * 0.96, w * 0.74, h * 0.86);
+      path.cubicTo(w * 0.78, h * 0.76, w * 0.66, h * 0.62, w * 0.70, h * 0.50);
+      path.cubicTo(w * 0.74, h * 0.38, w * 0.86, h * 0.28, w * 0.82, h * 0.16);
+      path.cubicTo(w * 0.78, h * 0.06, w * 0.64, h * 0.04, w * 0.48, h * 0.04);
+    }
+    path.close();
+    return path;
+  }
 
-    final radius = 10.0 + (intensity * 25.0);
-    final paintGlow = Paint()
+  void _drawPulseRing(Canvas canvas, Offset center, double radius, Color color) {
+    for (int i = 1; i <= 2; i++) {
+      final r = radius * (0.5 + i * 0.3);
+      final paint = Paint()
+        ..color = color.withOpacity(0.08 / i)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+      canvas.drawCircle(center, r, paint);
+    }
+  }
+
+  void _drawHotspot(Canvas canvas, Offset center, double intensity, Color color) {
+    if (intensity <= 0.01) return;
+    final radius = 6.0 + intensity * 12.0;
+
+    // Outer soft glow
+    final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          baseColor.withOpacity(0.9 * intensity),
-          baseColor.withOpacity(0.3 * intensity),
+          color.withOpacity(0.75 * intensity),
+          color.withOpacity(0.25 * intensity),
           Colors.transparent,
         ],
-      ).createShader(Rect.fromCircle(center: center, radius: radius));
+      ).createShader(Rect.fromCircle(center: center, radius: radius * 1.8));
+    canvas.drawCircle(center, radius * 1.8, glowPaint);
 
-    canvas.drawCircle(center, radius, paintGlow);
-
-    // Inner bright point
-    final paintPoint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
+    // Inner bright core
+    final corePaint = Paint()
+      ..color = Colors.white.withOpacity(0.9)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5)
       ..style = PaintingStyle.fill;
-    canvas.drawCircle(center, 2, paintPoint);
+    canvas.drawCircle(center, 2.5, corePaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _FootSilhouettePainter old) =>
+      old.pressure != pressure || old.accentColor != accentColor;
 }
 
-// 3. Animated Live ECG wave & vibrating wave lines
+// 3. Animated Live ECG wave with glow
 class _LiveWavePainter extends CustomPainter {
   final double animValue;
   final Color lineColor;
+  final Color glowColor;
   final bool isSine;
-
   final bool isFlat;
+  final double strokeWidth;
 
   _LiveWavePainter({
     required this.animValue,
     required this.lineColor,
+    this.glowColor = Colors.transparent,
     this.isSine = false,
     this.isFlat = false,
+    this.strokeWidth = 1.5,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    final path = Path();
     final w = size.width;
     final h = size.height;
 
+    final path = Path();
     path.moveTo(0, h / 2);
 
     if (isFlat) {
       path.lineTo(w, h / 2);
-      canvas.drawPath(path, paint);
+      final flatPaint = Paint()
+        ..color = lineColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth;
+      canvas.drawPath(path, flatPaint);
       return;
     }
 
     if (isSine) {
-      // Smooth sinusoidal vibration wave (Haptic representation)
       for (double x = 0; x <= w; x++) {
         final double phase = (x / w) * 4 * math.pi + (animValue * 2 * math.pi);
         final double y = (h / 2) + math.sin(phase) * (h / 2.5);
         path.lineTo(x, y);
       }
     } else {
-      // Heartbeat/ECG spike style wave (Live gait sensor representation)
       for (double x = 0; x <= w; x++) {
         double y = h / 2;
-
-        // Create cyclic spike groups
         final double relativeX = (x / w) - animValue;
         final double cyclePos = (relativeX * 3) % 1.0;
-
         if (cyclePos > 0.4 && cyclePos < 0.45) {
-          // Sharp QRS Spike
           y = (h / 2) - ((cyclePos - 0.4) * 20 * h);
         } else if (cyclePos >= 0.45 && cyclePos < 0.5) {
-          // Deep drop
           y = (h / 2) + ((0.5 - cyclePos) * 15 * h);
         } else if (cyclePos >= 0.6 && cyclePos < 0.7) {
-          // Small bump
           y = (h / 2) - (math.sin((cyclePos - 0.6) * 10 * math.pi) * (h / 4));
         }
-
         path.lineTo(x, y);
       }
     }
 
+    // Glow pass (blurred wider stroke under the crisp line)
+    if (glowColor != Colors.transparent) {
+      final glowPaint = Paint()
+        ..color = glowColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth * 4
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+      canvas.drawPath(path, glowPaint);
+    }
+
+    // Crisp line on top
+    final paint = Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
     canvas.drawPath(path, paint);
   }
 
