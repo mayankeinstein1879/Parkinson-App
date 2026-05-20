@@ -19,7 +19,7 @@ android {
         applicationId = "com.parkinsonsai.parkinson_insole_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 22  // flutter_blue_plus requires API 22+
+        minSdk = flutter.minSdkVersion  // flutter_blue_plus requires API 22+
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
