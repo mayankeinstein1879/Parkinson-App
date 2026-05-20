@@ -1,0 +1,54 @@
+name: parkinson_insole_app
+description: "AI-enabled Smart Insole Parkinson's Assistance System - BLE-based gait monitoring and adaptive cueing."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # BLE Communication — Core dependency for ESP32/STM32 communication
+  flutter_blue_plus: ^1.32.12
+
+  # State Management
+  provider: ^6.1.2
+
+  # Runtime Permissions (BLUETOOTH_SCAN, BLUETOOTH_CONNECT, Location)
+  permission_handler: ^11.3.1
+
+  # Typography — Orbitron (futuristic headings) + Inter (body text)
+  google_fonts: ^6.2.1
+
+  # Live Charts (gait analytics, FOG timeline)
+  fl_chart: ^0.68.0
+
+  # Micro-animations and page transitions
+  flutter_animate: ^4.5.0
+
+  # Settings persistence (cue settings, preferences)
+  shared_preferences: ^2.3.2
+
+  # Structured debug logging
+  logger: ^2.4.0
+
+  # Reactive stream utilities
+  rxdart: ^0.27.7
+
+  # Default Flutter icon pack
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  # NOTE: assets/ folders are intentionally omitted here.
+  # Add them back once assets/images/ and assets/fonts/ dirs are populated.
+  # assets:
+  #   - assets/images/
+  #   - assets/fonts/

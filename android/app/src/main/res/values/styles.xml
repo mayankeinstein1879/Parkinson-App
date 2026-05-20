@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launch screen background — must match AppColors.background -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#050A1A</item>
+    </style>
+
+    <!-- Normal app theme (Flutter takes over after launch) -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#050A1A</item>
+    </style>
+</resources>

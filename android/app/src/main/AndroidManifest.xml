@@ -1,0 +1,86 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+    ══════════════════════════════════════════════════════════════════
+    BLUETOOTH PERMISSIONS — Critical for BLE to work on Android
+    ══════════════════════════════════════════════════════════════════
+
+    Android 12+ (API 31+): BLUETOOTH_SCAN + BLUETOOTH_CONNECT
+    Android  <12 (API 30): ACCESS_FINE_LOCATION (required for BLE scan)
+
+    ALL three must be declared here. The app also requests them at
+    runtime via permission_handler in BlePermissionHandler.
+    ══════════════════════════════════════════════════════════════════
+    -->
+
+    <!-- Legacy Bluetooth (Android < 12) -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- Modern Bluetooth (Android 12+ / API 31+) -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- Location — Required for BLE scanning on Android < 12 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Internet — May be needed for future cloud telemetry sync -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Keep CPU awake during BLE monitoring session -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Vibration — for haptic cue delivery -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!--
+    Declare that the app requires BLE hardware.
+    Set required=false so it can still be installed on non-BLE devices
+    (graceful degradation with mock data mode).
+    -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+
+    <application
+        android:label="NeuroStep"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:theme="@style/LaunchTheme"
+        android:enableOnBackInvokedCallback="true">
+
+        <!-- Flutter main activity — uses FlutterActivity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/NormalTheme"
+            android:windowSoftInputMode="adjustResize">
+
+            <!-- App entry point intent filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- flutter_blue_plus BLE background scanning support -->
+        <service
+            android:name="com.boskokg.flutter_blue_plus.FlutterBluePlusPlugin"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- Required by flutter_blue_plus on Android 12+ -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
+</manifest>
