@@ -577,7 +577,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             children: [
               // Header
               Row(
-                mainAxisAlignment: MainAxisAlignment.between,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Real-Time Monitoring',
@@ -743,7 +743,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             children: [
               Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
               Row(
-                baseline: TextBaseline.alphabetic,
+                textBaseline: TextBaseline.alphabetic,
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 children: [
                   Text(
@@ -893,7 +893,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             children: [
               // Title Header & Mode Toggle
               Row(
-                mainAxisAlignment: MainAxisAlignment.between,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Adaptive Cue Settings Panel',
@@ -1080,7 +1080,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Column(
@@ -1245,7 +1245,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
