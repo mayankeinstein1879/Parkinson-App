@@ -44,7 +44,7 @@ class DeviceStatusScreen extends StatelessWidget {
                   device: ble.connectedDeviceLeft,
                   telemetryBattery: tele.leftData.batteryLevel,
                   side: InsoleSide.left,
-                  onReconnect: () => ble.startScan(),
+                  onReconnect: () => ble.reconnectDeviceOfSide(InsoleSide.left),
                 ),
                 const SizedBox(height: 12),
 
@@ -53,7 +53,7 @@ class DeviceStatusScreen extends StatelessWidget {
                   device: ble.connectedDeviceRight,
                   telemetryBattery: tele.rightData.batteryLevel,
                   side: InsoleSide.right,
-                  onReconnect: () => ble.startScan(),
+                  onReconnect: () => ble.reconnectDeviceOfSide(InsoleSide.right),
                 ),
                 const SizedBox(height: 12),
 

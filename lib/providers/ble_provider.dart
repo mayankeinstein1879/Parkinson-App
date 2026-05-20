@@ -137,6 +137,53 @@ class BleProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> reconnectDeviceOfSide(InsoleSide side) async {
+    _clearError();
+    _isScanning = true;
+    notifyListeners();
+
+    try {
+      final completer = Completer<InsoleDevice?>();
+      
+      StreamSubscription<List<InsoleDevice>>? tempSub;
+      tempSub = _bleManager.scanResultsStream.listen((devices) {
+        for (final device in devices) {
+          if (device.side == side) {
+            if (!completer.isCompleted) {
+              completer.complete(device);
+            }
+            break;
+          }
+        }
+      });
+
+      // Start the scan
+      await _bleManager.startScan();
+
+      // Wait for matching device or timeout (e.g. 15 seconds)
+      final device = await completer.future.timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => null,
+      );
+
+      await tempSub.cancel();
+      await _bleManager.stopScan();
+      _isScanning = false;
+      notifyListeners();
+
+      if (device != null) {
+        // Connect to it!
+        await connectToDevice(device);
+      } else {
+        _setError('No device found for ${side == InsoleSide.left ? "Left" : "Right"} insole.');
+      }
+    } catch (e) {
+      _setError('Reconnect error: $e');
+      _isScanning = false;
+      notifyListeners();
+    }
+  }
+
   // ── Auto-Reconnect ────────────────────────────────────────────────────────
 
   Future<void> toggleAutoReconnect() async {
