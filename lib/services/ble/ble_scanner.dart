@@ -70,6 +70,12 @@ class BleScanner {
         onDone: _onScanDone,
       );
 
+      if (!kIsWeb) {
+        _addSystemAndBondedDevices(filterName).catchError((e) {
+          AppLogger.ble('Error adding system/bonded devices', error: e);
+        });
+      }
+
       // Safety: auto-stop after timeout
       Timer(timeout + const Duration(seconds: 2), () {
         if (_isScanning) stopScan();
@@ -94,6 +100,58 @@ class BleScanner {
   }
 
   // ── Internal Handlers ─────────────────────────────────────────────────────
+
+  Future<void> _addSystemAndBondedDevices(String? filterName) async {
+    if (kIsWeb) return;
+
+    final targetFilter = filterName ?? BleConstants.deviceNamePrefix;
+    AppLogger.ble('Querying bonded and system BLE devices matching prefix: "$targetFilter"');
+
+    // 1. Query connected system devices (already connected to OS by system bluetooth)
+    List<BluetoothDevice> system = [];
+    try {
+      system = await FlutterBluePlus.systemDevices([Guid(BleConstants.telemetryServiceUuid)]);
+    } catch (e) {
+      AppLogger.ble('Error getting system devices', error: e);
+    }
+
+    // 2. Query bonded/paired devices (Android only)
+    List<BluetoothDevice> bonded = [];
+    try {
+      bonded = await FlutterBluePlus.bondedDevices;
+    } catch (e) {
+      AppLogger.ble('Error getting bonded devices', error: e);
+    }
+
+    final allDevices = <BluetoothDevice>{...system, ...bonded};
+    bool updated = false;
+
+    for (final device in allDevices) {
+      final name = device.platformName;
+      final matches = name.contains(targetFilter);
+      if (!matches) continue;
+
+      final side = InsoleDevice.detectSide(name);
+      final id = device.remoteId.str;
+
+      if (!_foundDevices.containsKey(id)) {
+        _foundDevices[id] = InsoleDevice(
+          id: id,
+          name: name.isEmpty ? 'Insole (${id.substring(0, 5)})' : name,
+          side: side,
+          rssi: null, // RSSI unknown/null for system/bonded devices until connected
+          lastSeen: DateTime.now(),
+          status: ConnectionStatus.disconnected,
+        );
+        AppLogger.ble('Retrieved system/bonded device: $name | Side: ${side.name} | ID: $id');
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      _emitUpdatedList();
+    }
+  }
 
   void _onScanResults(List<ScanResult> results, String? filterName) {
     for (final result in results) {
@@ -125,6 +183,10 @@ class BleScanner {
       AppLogger.ble('Found: $name | Side: ${side.name} | RSSI: ${result.rssi} dBm');
     }
 
+    _emitUpdatedList();
+  }
+
+  void _emitUpdatedList() {
     final sorted = _foundDevices.values.toList()
       ..sort((a, b) => a.side.index.compareTo(b.side.index));
 
