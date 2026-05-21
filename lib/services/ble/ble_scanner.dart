@@ -58,9 +58,9 @@ class BleScanner {
       } else {
         // ── ANDROID ──────────────────────────────────────────────────────────
         // Filter by name so we don't flood the list with unrelated devices
+        // Scan all devices, manual filtering is performed in onScanResults listener below
         await FlutterBluePlus.startScan(
           timeout: timeout,
-          withNames: filterName != null ? [filterName] : [],
         );
       }
 
@@ -97,7 +97,9 @@ class BleScanner {
 
   void _onScanResults(List<ScanResult> results, String? filterName) {
     for (final result in results) {
-      final name = result.device.platformName;
+      final name = result.device.platformName.isNotEmpty
+          ? result.device.platformName
+          : result.advertisementData.advName;
 
       // On web the browser already filtered — accept all results
       // On Android filter by name prefix

@@ -95,9 +95,9 @@ class InsoleDevice {
   /// The ESP32 is expected to advertise as 'Parkinson_L_Insole' or 'Parkinson_R_Insole'.
   static InsoleSide detectSide(String deviceName) {
     final lower = deviceName.toLowerCase();
-    if (lower.contains('_l_') || lower.contains('left')) {
+    if (lower.contains('_l') || lower.contains('left')) {
       return InsoleSide.left;
-    } else if (lower.contains('_r_') || lower.contains('right')) {
+    } else if (lower.contains('_r') || lower.contains('right')) {
       return InsoleSide.right;
     }
     return InsoleSide.unknown;
