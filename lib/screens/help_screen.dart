@@ -20,8 +20,25 @@ class HelpScreen extends StatelessWidget {
   }
 }
 
-class _HelpDesktopScreen extends StatelessWidget {
+class _HelpDesktopScreen extends StatefulWidget {
   const _HelpDesktopScreen();
+
+  @override
+  State<_HelpDesktopScreen> createState() => _HelpDesktopScreenState();
+}
+
+class _HelpDesktopScreenState extends State<_HelpDesktopScreen> {
+  int _activeTabIndex = 0;
+
+  final List<String> _tabs = [
+    'APP FEATURE DIRECTORY',
+    'System Overview',
+    'Hardware Status',
+    'Adaptive Gait Cueing',
+    'Emergency Protocols',
+    'AI Analytics',
+    'BLE Connection',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -30,72 +47,119 @@ class _HelpDesktopScreen extends StatelessWidget {
       body: Row(
         children: [
           const _HelpSidebar(),
-          Container(width: 1, color: AppColors.cardBorder),
+          Container(width: 1, color: AppColors.divider),
+          _HelpTabListPanel(
+            activeIndex: _activeTabIndex,
+            tabs: _tabs,
+            onTabSelected: (index) {
+              setState(() {
+                _activeTabIndex = index;
+              });
+            },
+          ),
+          Container(width: 1, color: AppColors.divider),
           Expanded(
             child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const _HubHero(),
-                    const SizedBox(height: 18),
+                    // Top status bar
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Expanded(
-                          flex: 7,
+                        // Live Status Badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF142E2B),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: const Color(0x6600FF88),
+                              width: 1,
+                            ),
+                          ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Left Column
-                              Expanded(
-                                flex: 10,
-                                child: Column(
-                                  children: const [
-                                    _SystemOverviewCard(),
-                                    SizedBox(height: 14),
-                                    _AdaptiveCueGuideCard(),
-                                  ],
+                              Text(
+                                'Live Status: ',
+                                style: GoogleFonts.inter(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(width: 14),
-                              // Right Columns
-                              Expanded(
-                                flex: 21,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: const [
-                                        Expanded(child: _MonitoringGuideCard()),
-                                        SizedBox(width: 14),
-                                        Expanded(child: _AnalyticsExplanationCard()),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 14),
-                                    const _EmergencyFeaturesCard(),
-                                    const SizedBox(height: 14),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: const [
-                                        Expanded(child: _BleGuideCard()),
-                                        SizedBox(width: 14),
-                                        Expanded(child: _FutureAiCard()),
-                                      ],
-                                    ),
-                                  ],
+                              Text(
+                                'All Sensors Active',
+                                style: GoogleFonts.inter(
+                                  color: AppColors.accentGreen,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 14),
-                        const Expanded(
-                          flex: 2,
-                          child: _AssistantTipsCard(),
+                        const SizedBox(width: 12),
+                        // BLE Button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF11253E),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.primaryCyan.withOpacity(0.5),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.bluetooth, color: AppColors.primaryCyan, size: 14),
+                              const SizedBox(width: 4),
+                              Text(
+                                'BLE',
+                                style: GoogleFonts.orbitron(
+                                  color: AppColors.primaryCyan,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 24),
+                    // Screen Title & Description
+                    Text(
+                      _activeTabIndex == 0
+                          ? 'SMART INSOLE APP FEATURE DIRECTORY'
+                          : _tabs[_activeTabIndex].toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        color: AppColors.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      _activeTabIndex == 0
+                          ? 'A comprehensive guide to all available system functions.'
+                          : 'Overview and guidelines for ${_tabs[_activeTabIndex]}.',
+                      style: GoogleFonts.inter(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Detail Content
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: _buildTabContent(),
+                      ),
                     ),
                   ],
                 ),
@@ -106,25 +170,268 @@ class _HelpDesktopScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildTabContent() {
+    switch (_activeTabIndex) {
+      case 0:
+        return const _AppFeatureDirectoryView();
+      case 1:
+        return const _SystemOverviewCard();
+      case 2:
+        return const _MonitoringGuideCard();
+      case 3:
+        return const _AdaptiveCueGuideCard();
+      case 4:
+        return const _EmergencyFeaturesCard();
+      case 5:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            _AnalyticsExplanationCard(),
+            SizedBox(height: 14),
+            _AssistantTipsCard(),
+          ],
+        );
+      case 6:
+        return const _BleGuideCard();
+      default:
+        return const _AppFeatureDirectoryView();
+    }
+  }
 }
 
-class _HelpMobileScreen extends StatelessWidget {
+class _HelpMobileScreen extends StatefulWidget {
   const _HelpMobileScreen();
+
+  @override
+  State<_HelpMobileScreen> createState() => _HelpMobileScreenState();
+}
+
+class _HelpMobileScreenState extends State<_HelpMobileScreen> {
+  int _activeTabIndex = 0;
+
+  final List<String> _tabs = [
+    'APP FEATURE DIRECTORY',
+    'System Overview',
+    'Hardware Status',
+    'Adaptive Gait Cueing',
+    'Emergency Protocols',
+    'AI Analytics',
+    'BLE Connection',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('System Intelligence Hub')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const [
-          _HubHero(compact: true),
-          SizedBox(height: 16),
-          _HelpMobilePlaceholder(),
+      appBar: AppBar(
+        title: Text(
+          'System Intelligence Hub',
+          style: GoogleFonts.orbitron(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Horizontal tabs for mobile
+          Container(
+            height: 48,
+            color: AppColors.surface,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: _tabs.length,
+              itemBuilder: (context, index) {
+                final isSelected = _activeTabIndex == index;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _activeTabIndex = index;
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppColors.primaryCyan.withOpacity(0.1) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSelected ? AppColors.primaryCyan : Colors.transparent,
+                          width: 1,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _tabs[index],
+                          style: GoogleFonts.inter(
+                            color: isSelected ? AppColors.primaryCyan : AppColors.textSecondary,
+                            fontSize: 12,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Tab Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    _activeTabIndex == 0
+                        ? 'SMART INSOLE APP FEATURE DIRECTORY'
+                        : _tabs[_activeTabIndex].toUpperCase(),
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _activeTabIndex == 0
+                        ? 'A comprehensive guide to all available system functions.'
+                        : 'Overview and guidelines for ${_tabs[_activeTabIndex]}.',
+                    style: GoogleFonts.inter(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTabContent(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Widget _buildTabContent() {
+    if (_activeTabIndex == 0) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final crossCount = constraints.maxWidth > 600 ? 2 : 1;
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossCount,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              mainAxisExtent: 80,
+            ),
+            itemCount: _features.length,
+            itemBuilder: (context, index) {
+              final feature = _features[index];
+              final isCyan = index.isEven;
+              final color = isCyan ? AppColors.primaryCyan : AppColors.secondaryPurple;
+              
+              return Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.cardBackground,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: color.withOpacity(0.35),
+                    width: 1.2,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F1E35),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: color.withOpacity(0.6),
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Center(
+                        child: _CustomFeatureIcon(
+                          index: index,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            feature.title,
+                            style: GoogleFonts.orbitron(
+                              color: AppColors.textPrimary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            feature.description,
+                            style: GoogleFonts.inter(
+                              color: AppColors.textSecondary,
+                              fontSize: 10,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    switch (_activeTabIndex) {
+      case 1:
+        return const _SystemOverviewCard();
+      case 2:
+        return const _MonitoringGuideCard();
+      case 3:
+        return const _AdaptiveCueGuideCard();
+      case 4:
+        return const _EmergencyFeaturesCard();
+      case 5:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            _AnalyticsExplanationCard(),
+            SizedBox(height: 14),
+            _AssistantTipsCard(),
+          ],
+        );
+      case 6:
+        return const _BleGuideCard();
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
 
@@ -139,6 +446,7 @@ class _HelpSidebar extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 24),
+          // Brand Logo
           Container(
             width: 42,
             height: 42,
@@ -176,16 +484,18 @@ class _HelpSidebar extends StatelessWidget {
             active: false,
             onTap: () => Navigator.pushNamed(context, '/settings'),
           ),
-          _HelpSidebarIcon(
-            icon: Icons.help_outline,
-            active: true,
-            onTap: () {},
-          ),
           const Spacer(),
+          // Logout button
           _HelpSidebarIcon(
             icon: Icons.logout_rounded,
             active: false,
             onTap: () => Navigator.pushReplacementNamed(context, '/auth'),
+          ),
+          // Active help icon at the very bottom
+          _HelpSidebarIcon(
+            icon: Icons.help_outline_rounded,
+            active: true,
+            onTap: () {},
           ),
           const SizedBox(height: 24),
         ],
@@ -238,6 +548,304 @@ class _HelpSidebarIcon extends StatelessWidget {
     );
   }
 }
+
+class _HelpTabListPanel extends StatelessWidget {
+  final int activeIndex;
+  final List<String> tabs;
+  final ValueChanged<int> onTabSelected;
+
+  const _HelpTabListPanel({
+    required this.activeIndex,
+    required this.tabs,
+    required this.onTabSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 250,
+      color: AppColors.background,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // App Feature Catalog label
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: AppColors.secondaryPurple.withOpacity(0.4),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              'App Feature Catalog',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.orbitron(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Vertical list of tabs
+          Expanded(
+            child: ListView.builder(
+              itemCount: tabs.length,
+              itemBuilder: (context, index) {
+                final isSelected = activeIndex == index;
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: InkWell(
+                      onTap: () => onTabSelected(index),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: isSelected ? const Color(0xFF13283A) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isSelected ? AppColors.primaryCyan : Colors.transparent,
+                            width: 1.5,
+                          ),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: AppColors.glowCyan.withOpacity(0.15),
+                                    blurRadius: 8,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Text(
+                          tabs[index],
+                          style: GoogleFonts.orbitron(
+                            color: isSelected ? AppColors.primaryCyan : AppColors.textSecondary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: InkWell(
+                    onTap: () => onTabSelected(index),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: isSelected ? const Color(0xFF152238) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        border: isSelected
+                            ? Border.all(color: AppColors.primaryCyan.withOpacity(0.5))
+                            : null,
+                      ),
+                      child: Text(
+                        tabs[index],
+                        style: GoogleFonts.inter(
+                          color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                          fontSize: 14,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeatureItem {
+  final String title;
+  final String description;
+  final IconData icon;
+
+  const _FeatureItem({
+    required this.title,
+    required this.description,
+    required this.icon,
+  });
+}
+
+final List<_FeatureItem> _features = [
+  const _FeatureItem(
+    title: 'Visual Laser Guide',
+    description: 'Directed laser point on walking surfaces.',
+    icon: Icons.gps_fixed,
+  ),
+  const _FeatureItem(
+    title: 'Emergency Photiocation',
+    description: 'Sensor and device health management.',
+    icon: Icons.local_hospital_outlined,
+  ),
+  const _FeatureItem(
+    title: 'Adaptive Gait Cueing',
+    description: 'Automatic physical and visual walking cues.',
+    icon: Icons.directions_run_outlined,
+  ),
+  const _FeatureItem(
+    title: 'FOG Prediction',
+    description: 'Stride metrics and symmetry tracking.',
+    icon: Icons.stacked_line_chart,
+  ),
+  const _FeatureItem(
+    title: 'Gait Analysis',
+    description: 'Stride metrics and symmetry tracking.',
+    icon: Icons.accessibility_new_rounded,
+  ),
+  const _FeatureItem(
+    title: 'Emergency Protocols',
+    description: 'Fall detection and SOS trigger.',
+    icon: Icons.warning_amber_rounded,
+  ),
+  const _FeatureItem(
+    title: 'FOG Prediction',
+    description: 'Freezing of Gait risk assessment.',
+    icon: Icons.report_problem_outlined,
+  ),
+  const _FeatureItem(
+    title: 'AI Analytics',
+    description: 'Historical health reports and trends.',
+    icon: Icons.trending_up_rounded,
+  ),
+  const _FeatureItem(
+    title: 'Gait Cuaction',
+    description: 'Historical health reports and trends.',
+    icon: Icons.waves_rounded,
+  ),
+  const _FeatureItem(
+    title: 'RoadMap',
+    description: 'System update schedule and future releases.',
+    icon: Icons.route_outlined,
+  ),
+  const _FeatureItem(
+    title: 'Gait Analysis',
+    description: 'Stride metrics and symmetry tracking.',
+    icon: Icons.device_hub_outlined,
+  ),
+  const _FeatureItem(
+    title: 'BLE Status & Connection',
+    description: 'Sensor and device health management.',
+    icon: Icons.bluetooth_connected_outlined,
+  ),
+];
+
+class _AppFeatureDirectoryView extends StatelessWidget {
+  const _AppFeatureDirectoryView();
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 80,
+      ),
+      itemCount: _features.length,
+      itemBuilder: (context, index) {
+        final feature = _features[index];
+        final isCyan = index.isEven;
+        final color = isCyan ? AppColors.primaryCyan : AppColors.secondaryPurple;
+        final glow = isCyan ? AppColors.glowCyan : AppColors.glowPurple;
+        
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.cardBackground,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withOpacity(0.35),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: glow.withOpacity(0.06),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F1E35),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: color.withOpacity(0.6),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: glow.withOpacity(0.15),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: _CustomFeatureIcon(
+                    index: index,
+                    color: color,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      feature.title,
+                      style: GoogleFonts.orbitron(
+                        color: AppColors.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      feature.description,
+                      style: GoogleFonts.inter(
+                        color: AppColors.textSecondary,
+                        fontSize: 11,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 
 class _HubHero extends StatelessWidget {
   final bool compact;
@@ -1482,6 +2090,466 @@ class _SafetyWavePainter extends CustomPainter {
     }
   }
 
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _CustomFeatureIcon extends StatelessWidget {
+  final int index;
+  final Color color;
+
+  const _CustomFeatureIcon({required this.index, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    switch (index) {
+      case 0:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _LaserGuidePainter(color),
+        );
+      case 1:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _FootPulsePainter(color),
+        );
+      case 2:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _FootCuePainter(color),
+        );
+      case 3:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _PulseWavePainter(color),
+        );
+      case 4:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _WalkerPainter(color),
+        );
+      case 5:
+        return Container(
+          width: 22,
+          height: 22,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: color, width: 1.5),
+          ),
+          child: Center(
+            child: Text(
+              'SOS',
+              style: GoogleFonts.inter(
+                color: color,
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.1,
+              ),
+            ),
+          ),
+        );
+      case 6:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _FootWarningPainter(color),
+        );
+      case 7:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _LineGraphPainter(color),
+        );
+      case 8:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _SineWavePainter(color),
+        );
+      case 9:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _RoadmapPainter(color),
+        );
+      case 10:
+        return CustomPaint(
+          size: const Size(24, 24),
+          painter: _DropletPinPainter(color),
+        );
+      case 11:
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned(
+              left: 4,
+              child: Icon(Icons.bluetooth, color: color, size: 14),
+            ),
+            Positioned(
+              right: 4,
+              child: Icon(Icons.smartphone_outlined, color: color, size: 14),
+            ),
+          ],
+        );
+      default:
+        return Icon(Icons.help_outline, color: color, size: 22);
+    }
+  }
+}
+
+class _LaserGuidePainter extends CustomPainter {
+  final Color color;
+  _LaserGuidePainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round;
+    
+    canvas.drawLine(Offset(size.width * 0.15, size.height * 0.85), Offset(size.width * 0.7, size.height * 0.3), paint);
+    
+    final fillPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.3), 3.5, fillPaint);
+    
+    final haloPaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.3), 6, haloPaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _PulseWavePainter extends CustomPainter {
+  final Color color;
+  _PulseWavePainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final path = Path();
+    path.moveTo(0, size.height * 0.5);
+    path.lineTo(size.width * 0.25, size.height * 0.5);
+    path.lineTo(size.width * 0.35, size.height * 0.25);
+    path.lineTo(size.width * 0.45, size.height * 0.75);
+    path.lineTo(size.width * 0.55, size.height * 0.15);
+    path.lineTo(size.width * 0.65, size.height * 0.65);
+    path.lineTo(size.width * 0.75, size.height * 0.5);
+    path.lineTo(size.width, size.height * 0.5);
+    canvas.drawPath(path, paint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _SineWavePainter extends CustomPainter {
+  final Color color;
+  _SineWavePainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round;
+    final path = Path();
+    path.moveTo(0, size.height * 0.5);
+    for (double x = 0; x <= size.width; x += 1.0) {
+      final y = size.height * 0.5 + 6 * math.sin((x / size.width) * 4 * math.pi);
+      if (x == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    canvas.drawPath(path, paint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _RoadmapPainter extends CustomPainter {
+  final Color color;
+  _RoadmapPainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final linePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8;
+    
+    final nodePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final nodeOutlinePaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    final p1 = Offset(size.width * 0.2, size.height * 0.7);
+    final p2 = Offset(size.width * 0.5, size.height * 0.3);
+    final p3 = Offset(size.width * 0.8, size.height * 0.6);
+
+    final path = Path();
+    path.moveTo(p1.dx, p1.dy);
+    path.quadraticBezierTo(size.width * 0.35, size.height * 0.4, p2.dx, p2.dy);
+    path.quadraticBezierTo(size.width * 0.65, size.height * 0.5, p3.dx, p3.dy);
+    canvas.drawPath(path, linePaint);
+
+    canvas.drawCircle(p1, 3, nodePaint);
+    canvas.drawCircle(p1, 5.5, nodeOutlinePaint);
+    canvas.drawCircle(p2, 3, nodePaint);
+    canvas.drawCircle(p2, 5.5, nodeOutlinePaint);
+    canvas.drawCircle(p3, 3, nodePaint);
+    canvas.drawCircle(p3, 5.5, nodeOutlinePaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _LineGraphPainter extends CustomPainter {
+  final Color color;
+  _LineGraphPainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final linePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    
+    final nodePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final pts = [
+      Offset(size.width * 0.15, size.height * 0.75),
+      Offset(size.width * 0.4, size.height * 0.45),
+      Offset(size.width * 0.65, size.height * 0.65),
+      Offset(size.width * 0.85, size.height * 0.3),
+    ];
+
+    final path = Path();
+    path.moveTo(pts[0].dx, pts[0].dy);
+    for (int i = 1; i < pts.length; i++) {
+      path.lineTo(pts[i].dx, pts[i].dy);
+    }
+    canvas.drawPath(path, linePaint);
+
+    for (final pt in pts) {
+      canvas.drawCircle(pt, 2.5, nodePaint);
+    }
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _FootPulsePainter extends CustomPainter {
+  final Color color;
+  _FootPulsePainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    
+    final footPaint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    
+    final path = Path();
+    final xOff = -w * 0.08;
+    path.moveTo(w * 0.4 + xOff, h * 0.8);
+    path.cubicTo(w * 0.28 + xOff, h * 0.8, w * 0.28 + xOff, h * 0.7, w * 0.33 + xOff, h * 0.6);
+    path.cubicTo(w * 0.38 + xOff, h * 0.52, w * 0.38 + xOff, h * 0.45, w * 0.3 + xOff, h * 0.35);
+    path.cubicTo(w * 0.25 + xOff, h * 0.28, w * 0.33 + xOff, h * 0.2, w * 0.42 + xOff, h * 0.2);
+    path.cubicTo(w * 0.52 + xOff, h * 0.2, w * 0.57 + xOff, h * 0.28, w * 0.53 + xOff, h * 0.38);
+    path.cubicTo(w * 0.48 + xOff, h * 0.5, w * 0.52 + xOff, h * 0.68, w * 0.4 + xOff, h * 0.8);
+    path.close();
+    canvas.drawPath(path, footPaint);
+    
+    final wavePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+      
+    canvas.drawArc(Rect.fromLTWH(w * 0.42, h * 0.3, w * 0.25, h * 0.4), -math.pi / 4, math.pi / 2, false, wavePaint);
+    canvas.drawArc(Rect.fromLTWH(w * 0.52, h * 0.24, w * 0.28, h * 0.52), -math.pi / 4, math.pi / 2, false, wavePaint);
+    canvas.drawArc(Rect.fromLTWH(w * 0.62, h * 0.18, w * 0.32, h * 0.64), -math.pi / 4, math.pi / 2, false, wavePaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _FootCuePainter extends CustomPainter {
+  final Color color;
+  _FootCuePainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    
+    final footPaint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+      
+    final path = Path();
+    path.moveTo(w * 0.5, h * 0.8);
+    path.cubicTo(w * 0.38, h * 0.8, w * 0.38, h * 0.7, w * 0.43, h * 0.6);
+    path.cubicTo(w * 0.48, h * 0.52, w * 0.48, h * 0.45, w * 0.4, h * 0.35);
+    path.cubicTo(w * 0.35, h * 0.28, w * 0.43, h * 0.2, w * 0.52, h * 0.2);
+    path.cubicTo(w * 0.62, h * 0.2, w * 0.67, h * 0.28, w * 0.63, h * 0.38);
+    path.cubicTo(w * 0.58, h * 0.5, w * 0.62, h * 0.68, w * 0.5, h * 0.8);
+    path.close();
+    canvas.drawPath(path, footPaint);
+    
+    final cuePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+      
+    canvas.drawArc(Rect.fromLTWH(w * 0.4, h * 0.05, w * 0.24, h * 0.2), math.pi, math.pi, false, cuePaint);
+    canvas.drawArc(Rect.fromLTWH(w * 0.35, h * -0.01, w * 0.34, h * 0.24), math.pi, math.pi, false, cuePaint);
+    
+    canvas.drawArc(Rect.fromLTWH(w * 0.4, h * 0.75, w * 0.24, h * 0.2), 0, math.pi, false, cuePaint);
+    canvas.drawArc(Rect.fromLTWH(w * 0.35, h * 0.77, w * 0.34, h * 0.24), 0, math.pi, false, cuePaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _WalkerPainter extends CustomPainter {
+  final Color color;
+  _WalkerPainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+      
+    canvas.drawCircle(Offset(w * 0.5, h * 0.22), 3, Paint()..color = color..style = PaintingStyle.fill);
+    
+    canvas.drawLine(Offset(w * 0.5, h * 0.28), Offset(w * 0.5, h * 0.55), paint);
+    
+    canvas.drawLine(Offset(w * 0.5, h * 0.33), Offset(w * 0.32, h * 0.48), paint);
+    canvas.drawLine(Offset(w * 0.5, h * 0.33), Offset(w * 0.65, h * 0.42), paint);
+    
+    final legPath1 = Path()
+      ..moveTo(w * 0.5, h * 0.55)
+      ..lineTo(w * 0.38, h * 0.72)
+      ..lineTo(w * 0.32, h * 0.85);
+    canvas.drawPath(legPath1, paint);
+    
+    final legPath2 = Path()
+      ..moveTo(w * 0.5, h * 0.55)
+      ..lineTo(w * 0.6, h * 0.7)
+      ..lineTo(w * 0.64, h * 0.85);
+    canvas.drawPath(legPath2, paint);
+    
+    final refPaint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawLine(Offset(w * 0.2, h * 0.86), Offset(w * 0.8, h * 0.86), refPaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _FootWarningPainter extends CustomPainter {
+  final Color color;
+  _FootWarningPainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    
+    final footPaint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+      
+    final path = Path();
+    path.moveTo(w * 0.5, h * 0.8);
+    path.cubicTo(w * 0.38, h * 0.8, w * 0.38, h * 0.7, w * 0.43, h * 0.6);
+    path.cubicTo(w * 0.48, h * 0.52, w * 0.48, h * 0.45, w * 0.4, h * 0.35);
+    path.cubicTo(w * 0.35, h * 0.28, w * 0.43, h * 0.2, w * 0.52, h * 0.2);
+    path.cubicTo(w * 0.62, h * 0.2, w * 0.67, h * 0.28, w * 0.63, h * 0.38);
+    path.cubicTo(w * 0.58, h * 0.5, w * 0.62, h * 0.68, w * 0.5, h * 0.8);
+    path.close();
+    canvas.drawPath(path, footPaint);
+    
+    final alertPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+      
+    final triPath = Path()
+      ..moveTo(w * 0.68, h * 0.25)
+      ..lineTo(w * 0.56, h * 0.45)
+      ..lineTo(w * 0.8, h * 0.45)
+      ..close();
+    canvas.drawPath(triPath, alertPaint);
+    
+    final fillPaint = Paint()..color = color..style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(w * 0.67, h * 0.32, 1.5, 5), fillPaint);
+    canvas.drawCircle(Offset(w * 0.68, h * 0.41), 1, fillPaint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _DropletPinPainter extends CustomPainter {
+  final Color color;
+  _DropletPinPainter(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+      
+    final dropPath = Path()
+      ..moveTo(w * 0.35, h * 0.2)
+      ..cubicTo(w * 0.35, h * 0.2, w * 0.15, h * 0.5, w * 0.15, h * 0.65)
+      ..arcToPoint(Offset(w * 0.55, h * 0.65), radius: Radius.circular(w * 0.2), largeArc: true)
+      ..cubicTo(w * 0.55, h * 0.5, w * 0.35, h * 0.2, w * 0.35, h * 0.2)
+      ..close();
+    canvas.drawPath(dropPath, paint);
+    
+    final pinPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    
+    final pinPath = Path()
+      ..moveTo(w * 0.7, h * 0.4)
+      ..cubicTo(w * 0.58, h * 0.4, w * 0.55, h * 0.55, w * 0.7, h * 0.75)
+      ..cubicTo(w * 0.85, h * 0.55, w * 0.82, h * 0.4, w * 0.7, h * 0.4)
+      ..close();
+    canvas.drawPath(pinPath, pinPaint);
+    canvas.drawCircle(Offset(w * 0.7, h * 0.48), 2, Paint()..color = color..style = PaintingStyle.fill);
+  }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
