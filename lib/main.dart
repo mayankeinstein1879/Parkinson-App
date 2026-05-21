@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:parkinson_insole_app/firebase_options.dart';
 import 'package:parkinson_insole_app/app.dart';
 import 'package:parkinson_insole_app/providers/ble_provider.dart';
 import 'package:parkinson_insole_app/providers/settings_provider.dart';
@@ -11,6 +13,20 @@ import 'package:parkinson_insole_app/utils/logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase if configured
+  if (DefaultFirebaseOptions.isConfigured) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      AppLogger.info('Firebase initialized successfully.');
+    } catch (e, stack) {
+      AppLogger.error('Firebase initialization failed', e, stack);
+    }
+  } else {
+    AppLogger.warn('Firebase is not configured. Please add your credentials in lib/firebase_options.dart');
+  }
 
   // Force dark status bar / navigation bar to match app theme
   SystemChrome.setSystemUIOverlayStyle(

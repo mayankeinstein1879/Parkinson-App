@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parkinson_insole_app/firebase_options.dart';
 import 'package:parkinson_insole_app/constants/app_colors.dart';
 import 'package:parkinson_insole_app/constants/app_strings.dart';
 
@@ -24,6 +27,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
   bool _obscurePassword = true;
   bool _isLoading = false;
+  String? _authError;
 
   @override
   void initState() {
@@ -37,6 +41,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         _emailController.clear();
         _passwordController.clear();
         _confirmPasswordController.clear();
+        _authError = null;
         setState(() {});
       }
     });
@@ -55,15 +60,67 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    if (!DefaultFirebaseOptions.isConfigured) {
+      setState(() {
+        _authError = 'Firebase is not configured. See the warning banner above.';
+      });
+      return;
+    }
 
-    // Mock API authentication delay
-    await Future.delayed(const Duration(milliseconds: 1500));
+    setState(() {
+      _isLoading = true;
+      _authError = null;
+    });
 
-    if (mounted) {
-      setState(() => _isLoading = false);
-      // Navigate to BLE scanning screen
-      Navigator.pushReplacementNamed(context, '/scan');
+    final isLoginTab = _tabController.index == 0;
+
+    try {
+      if (isLoginTab) {
+        // Sign In via Firebase Auth
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+      } else {
+        // Create User via Firebase Auth
+        final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+
+        if (credential.user != null) {
+          // Write profile data to Cloud Firestore
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(credential.user!.uid)
+              .set({
+            'uid': credential.user!.uid,
+            'name': _nameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
+      }
+
+      if (mounted) {
+        setState(() => _isLoading = false);
+        // Navigate to BLE scanning screen
+        Navigator.pushReplacementNamed(context, '/scan');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _authError = e.message ?? 'Authentication failed';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _authError = e.toString();
+        });
+      }
     }
   }
 
@@ -212,6 +269,35 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                     ),
                     const SizedBox(height: 24),
 
+                    // Firebase Config Warning Banner
+                    if (!DefaultFirebaseOptions.isConfigured) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.alertRed.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.alertRed.withOpacity(0.4)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.warning_amber_rounded, color: AppColors.alertRed),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Firebase is not configured. Please fill in your project credentials in lib/firebase_options.dart.',
+                                style: GoogleFonts.inter(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
                     // Auth Form Card
                     Container(
                       padding: const EdgeInsets.all(24),
@@ -328,6 +414,20 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                                 },
                               ),
                               const SizedBox(height: 16),
+                            ],
+
+                            if (_authError != null) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                _authError!,
+                                style: GoogleFonts.inter(
+                                  color: AppColors.alertRed,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 4),
                             ],
 
                             const SizedBox(height: 8),
