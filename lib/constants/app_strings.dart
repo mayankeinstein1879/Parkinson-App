@@ -4,13 +4,13 @@ class AppStrings {
   AppStrings._();
 
   // ── App Identity ──────────────────────────────────────────────────────────
-  static const String appName        = 'NeuroStep';
+  static const String appName        = 'NeuroPark';
   static const String appTagline     = 'AI-Assisted Gait Monitoring & Adaptive Cueing';
   static const String appVersion     = 'v0.1.0 (Beta)';
   static const String appPackage     = 'com.parkinsonsai.parkinson_insole_app';
 
   // ── Screen Titles ─────────────────────────────────────────────────────────
-  static const String titleSplash       = 'NeuroStep';
+  static const String titleSplash       = 'NeuroPark';
   static const String titleScan         = 'Find Insoles';
   static const String titleConnect      = 'Connecting';
   static const String titleDashboard    = 'Dashboard';
